@@ -29,7 +29,7 @@ const Hero = () => {
                             type="date"
                             id='pickup-date'
                             min={new Date().toISOString().split('T')[0]}
-                            className="border text-gray-600 rounded mt-3 outline-none cursor-pointer"
+                            className="border text-gray-600 p-1 rounded mt-3 outline-none cursor-pointer"
                             required
                         />
                     </div>
@@ -39,7 +39,7 @@ const Hero = () => {
                             type="date"
                             id='return-date'
                             min={new Date().toISOString().split('T')[0]}
-                            className="border text-gray-600 rounded mt-3 outline-none cursor-pointer"
+                            className="border text-gray-600 p-1 rounded mt-3 outline-none cursor-pointer"
                             required
 
                         />

@@ -72,7 +72,7 @@ const Cardetails = () => {
         <div>
           <form action="" className='shadow-lg h-max sticky top-18 rounded-xl p-6 space-y-6 text-gray-500'>
             <div className='flex justify-between items-center'>
-              <p>$ {car.pricePerDay}</p>
+              <p className='font-bold text-black text-2xl'>$ {car.pricePerDay}</p>
               <span> Per Day</span>
             </div>
             <hr className="border-borderColor my-6" />
