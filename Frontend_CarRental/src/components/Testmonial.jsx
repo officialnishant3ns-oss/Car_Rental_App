@@ -2,7 +2,7 @@ import React from "react"
 
 const Testimonial = () => {
   return (
-    <section className="w-full pt-15 flex justify-center mt-24 mb-28 px-6">
+    <section id='testomonial' className="w-full pt-15 flex justify-center mt-24 mb-28 px-6">
       <div className="max-w-7xl w-full">
 
 

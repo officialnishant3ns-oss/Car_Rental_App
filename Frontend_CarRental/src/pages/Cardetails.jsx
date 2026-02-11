@@ -15,7 +15,7 @@ const Cardetails = () => {
   return car ? (
     <div className='px-6 mt-15'>
       <button
-        className='flex items-center gap-2 mb-6 ml-10'
+        className='flex items-center gap-2 mb-6 ml-13'
         onClick={() => navigate(-1)} >
         <img src={assets.arrow_icon} className='rotate-180' alt="" />
         Back to all Car
@@ -23,10 +23,10 @@ const Cardetails = () => {
 
 
 
-      <div className='grid grid-cols-3 gap-12 m-auto ml-10 mr-10'>
+      <div className='grid grid-cols-3 gap-12 pl-13 pr-13'>
   
         <div className='col-span-2 mb-25 '>
-          <img src={car.image} alt="" className='w-full object-cover mb-6 h-130 rounded-2xl' />
+          <img src={car.image} alt="" className='w-full object-cover mb-6 h-120 rounded-2xl' />
           <div>    <h1 className='text-4xl font-semibold mb-3'>{car.brand}   {car.model}</h1>
             <p className='text-lg  font-serif'>{car.year}  {car.category}</p>
           </div>
@@ -82,7 +82,7 @@ const Cardetails = () => {
                 type="date"
                 id='pickup-date'
                 min={new Date().toISOString().split('T')[0]}
-                className="border  border-borderColor px-3 py-2 w-99 rounded-lg text-gray-600  mt-3 outline-none cursor-pointer"
+                className="border  border-borderColor px-3 py-2 w-90 rounded-lg text-gray-600  mt-3 outline-none cursor-pointer"
                 required
 
               />
@@ -93,7 +93,7 @@ const Cardetails = () => {
                 type="date"
                 id='return-date'
                 min={new Date().toISOString().split('T')[0]}
-                className="border border-borderColor px-5 w-99 py-3 cursor-pointer rounded-lg"
+                className="border border-borderColor px-5 w-90 py-3 cursor-pointer rounded-lg"
                 required
 
               />

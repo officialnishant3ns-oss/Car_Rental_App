@@ -11,7 +11,7 @@ const Navbar = ({setShowLogin}) => {
         <img src={assets.logo} className='h-8' alt="" />
       </div>
       <div className={`flex gap-7 max-sm:flex-col max-sm:text-white  max-sm:bg-gray-600 max-sm:h-full max-sm:min-h-screen max-sm:w-60 max-sm:fixed top-0 border-0 right-0 max-sm:pt-20 max-sm:pl-5  max-sm:transition-transform ${sidebarOpen ? "max-sm:translate-x-0" : "max-sm:translate-x-full"}`}>
-        <ul className="flex items-center gap-8 text-xl font-semibold text-black" >
+        <ul className="flex items-center gap-8 text-xl font-normal text-black" >
           <li>
             <NavLink
               to="/"
@@ -28,9 +28,9 @@ const Navbar = ({setShowLogin}) => {
           </li>
           <li>
             <NavLink
-              to="/about"
+              to="/my-bookings"
               className="hover:text-gray-700 transition">
-              About
+              My Booking
             </NavLink>
           </li>
         </ul>
@@ -50,8 +50,8 @@ const Navbar = ({setShowLogin}) => {
         </div>
 
         <div className='flex items-center justify-center gap-x-10'>
-          <button className=' font-semibold' >DashBoard</button>
-          <button className='p-3 text-white bg-blue-600 border-2 border-blue-800 rounded-3xl'>Sign Up</button>
+          <button className=' font-normal' >DashBoard</button>
+          <button  className='p-3 text-white bg-blue-600 border-2 border-blue-800 rounded-3xl'>Sign Up</button>
         </div>
 
 
