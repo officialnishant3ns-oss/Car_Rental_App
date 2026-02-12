@@ -8,10 +8,12 @@ const Cardetails = () => {
   const navigate = useNavigate()
   const [car, setCar] = useState(null)
 
-  submithandler = (e) => {
+  
+ const submitHandler = async(e) => {
     e.preventDefault()
-  }
 
+    
+  }
 
   useEffect(() => {
     setCar(dummyCarData.find((car) => car._id === id))
@@ -30,7 +32,7 @@ const Cardetails = () => {
 
 
       <div className='grid grid-cols-3 gap-12 pl-13 pr-13'>
-
+  
         <div className='col-span-2 mb-25 '>
           <img src={car.image} alt="" className='w-full object-cover mb-6 h-120 rounded-2xl' />
           <div>    <h1 className='text-4xl font-semibold mb-3'>{car.brand}   {car.model}</h1>
@@ -74,11 +76,11 @@ const Cardetails = () => {
         </div>
 
 
-
+      
         <div>
           <form
-            onSubmit={submithandler}
-            action="" className='shadow-lg h-max sticky top-18 rounded-xl p-6 space-y-6 text-gray-500'>
+          onSubmit={submitHandler}
+          action="" className='shadow-lg h-max sticky top-18 rounded-xl p-6 space-y-6 text-gray-500'>
             <div className='flex justify-between items-center'>
               <p className='font-bold text-black text-2xl'>$ {car.pricePerDay}</p>
               <span> Per Day</span>
@@ -113,7 +115,7 @@ const Cardetails = () => {
         </div>
       </div>
     </div>
-  ) : <Loader />
+  ) : <Loader/>
 }
 
 export default Cardetails
