@@ -15,21 +15,21 @@ const Navbar = ({setShowLogin}) => {
           <li>
             <NavLink
               to="/"
-              className="hover:text-gray-700 transition">
+              className="hover:text-red-700 transition">
               Home
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/car"
-              className="hover:text-gray-700 transition">
+              className="hover:text-red-700 transition">
               Car
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/my-bookings"
-              className="hover:text-gray-700 transition">
+              className="hover:text-red-700 transition">
               My Booking
             </NavLink>
           </li>
@@ -50,7 +50,7 @@ const Navbar = ({setShowLogin}) => {
         </div>
 
         <div className='flex items-center justify-center gap-x-10'>
-          <button className=' font-normal' >DashBoard</button>
+          <button className='text-xl font-normal' >DashBoard</button>
           <button  className='p-3 text-white bg-blue-600 border-2 border-blue-800 rounded-3xl'>Sign Up</button>
         </div>
 

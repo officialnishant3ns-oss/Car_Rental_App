@@ -8,6 +8,7 @@ import Car from './pages/Car'
 import Cardetails from './pages/Cardetails'
 import Booking from './pages/Booking'
 import Footer from './components/Footer'
+import Loader from './components/Loader'
 
 function App() {
   const [showLogin, setShowLogin] = useState(false)
@@ -17,7 +18,6 @@ function App() {
 
   return (
     <> 
- 
       {!isOwnerPath && <Navbar setShowLogin={setShowLogin} />}
       <Routes>
         <Route path='/' element={<Home />} />

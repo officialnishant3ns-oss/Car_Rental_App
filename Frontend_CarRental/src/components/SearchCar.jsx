@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { assets } from '../assets/assets'
 
 const SearchCar = () => {
+ const [input ,setInput]= useState('')
   return (
    <div>
      <div>
@@ -19,6 +20,12 @@ const SearchCar = () => {
 
     <input
       type="search"
+      value={input}
+      onChange={(e) => {
+        setInput(e.target.value)
+      }
+      }
+
       name="Car-search"
       placeholder="Search by Brand, Models or Features"
       className="w-full pl-10 pr-10 py-4 rounded-xl border outline-none focus:ring-2 focus:ring-primary"
