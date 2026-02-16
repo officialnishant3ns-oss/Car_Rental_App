@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from "axios";
 
 const api = axios.create({
@@ -11,6 +11,17 @@ const AppContext = ({ children }) => {
     const [car, setCar] = useState(null)
     const [isOwner, setIsOwner] = useState(false)
     const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+    useEffect(() => {
+        if (token) {
+            api.defaults.headers.common["Authorization"] = `Bearer ${token}`
+            localStorage.setItem("token", token)
+            setIsLoggedIn(true);
+            getUser();
+        }
+    }, []
+    )
+
 
     const getUser = async () => {
         try {
