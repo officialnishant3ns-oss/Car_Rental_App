@@ -1,42 +1,58 @@
-import React from 'react'
-import { useState } from 'react'
-import api from '../api/api.js'
-import { Link } from 'react-router-dom'
-import { useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
+import api from "../api/api.js"
 import { AppContext } from "../context/AppContext"
 
+const Login = ({ setShowLogin }) => {
+  const { setToken, setUser } = useContext(AppContext)
 
-const Login = ({setShowLogin}) => {
-const { setToken,setUser } = useContext(AppContext)
+  const [mode, setMode] = useState("login")
+  const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
-
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [Loading, setLoading] = useState(false)
+  useEffect(() => {
+    setUsername("")
+    setEmail("")
+    setPassword("")
+    setError("")
+  }, [mode])
 
   const submitHandler = async (e) => {
     e.preventDefault()
     setLoading(true)
+    setError("")
 
     try {
-      const res = await api.post("/user/login", {
-        email,
-        password
-      })
-      // console.log("Login success:", res.data)
-      setToken(res.data.Token)
-      setUser(res.data.user)
-      localStorage.setItem("token", res.data.Token)
-      localStorage.setItem("user", JSON.stringify(res.data.user))
+      const endpoint =
+        mode === "login" ? "/user/login" : "/user/register"
 
-      setShowLogin(false) 
-      setEmail('')
-      setPassword('')
-      console.log("submited")
-     
+      const payload =
+        mode === "login"
+          ? { email, password }
+          : { fullname: username, email, password }
+
+      const res = await api.post(endpoint, payload)
+
+      const token = res.data.Token
+      const user = res.data.user
+    console.log(res.data)
+      setToken(token)
+      setUser(user)
+
+      localStorage.setItem("token", token)
+      localStorage.setItem("user", JSON.stringify(user))
+
+      setShowLogin(false)
 
     } catch (err) {
-      console.log("Login failed:", err.response?.data || err.message)
+      setError(
+        err.response?.data?.message ||
+        err.response?.data?.msg ||
+        err.message ||
+        "Request failed"
+      )
     } finally {
       setLoading(false)
     }
@@ -44,60 +60,97 @@ const { setToken,setUser } = useContext(AppContext)
 
   return (
     <div
-      onClick={()=>{setShowLogin(false)}}
+      onClick={() => setShowLogin(false)}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
     >
       <form
-        onClick={(e)=>e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
         onSubmit={submitHandler}
         className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 space-y-6 animate-scaleIn"
       >
-
         <div className="text-center space-y-1">
-          <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
-          <p className="text-gray-500 text-sm">Login to continue</p>
+          <h2 className="text-3xl font-bold text-gray-800">
+            {mode === "login" ? "Welcome Back" : "Create Account"}
+          </h2>
+          <p className="text-gray-500 text-sm">
+            {mode === "login" ? "Login to continue" : "Sign up to get started"}
+          </p>
         </div>
 
         <div className="space-y-4">
+          {mode === "register" && (
+            <input
+              type="text"
+              required
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter Username"
+              className="w-full border border-gray-300 p-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-400 transition"
+            />
+          )}
+
           <input
             type="email"
-            value={email}
             required
-            onChange={(e)=>setEmail(e.target.value)}
-            placeholder="Enter your Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter Email"
             className="w-full border border-gray-300 p-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-400 transition"
           />
 
           <input
             type="password"
-            value={password}
             required
-            onChange={(e)=>setPassword(e.target.value)}
-            placeholder="Enter your Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter Password"
             className="w-full border border-gray-300 p-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-400 transition"
           />
         </div>
 
+        {error && (
+          <p className="text-red-500 text-sm text-center">{error}</p>
+        )}
+
         <div className="text-sm text-center text-gray-600">
-          Don’t have an account?{" "}
-          <Link
-            to="/register"
-            // onClick={()=>{setShowLogin(false)}}
-            className="text-blue-600 font-semibold hover:underline"
-          >
-            Sign up
-          </Link>
+          {mode === "login" ? (
+            <>
+              Don’t have an account?{" "}
+              <button
+                type="button"
+                onClick={() => setMode("register")}
+                className="text-blue-600 font-semibold hover:underline"
+              >
+                Sign up
+              </button>
+            </>
+          ) : (
+            <>
+              Already have an account?{" "}
+              <button
+                type="button"
+                onClick={() => setMode("login")}
+                className="text-blue-600 font-semibold hover:underline"
+              >
+                Login
+              </button>
+            </>
+          )}
         </div>
 
         <button
-          disabled={Loading}
+          disabled={loading}
           className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 active:scale-[0.98] transition disabled:opacity-60"
         >
-          {Loading ? "Logging In..." : "Login"}
+          {loading
+            ? mode === "login"
+              ? "Logging In..."
+              : "Creating Account..."
+            : mode === "login"
+            ? "Login"
+            : "Register"}
         </button>
-
       </form>
-     
     </div>
   )
 }

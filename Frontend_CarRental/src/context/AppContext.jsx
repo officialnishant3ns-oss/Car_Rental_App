@@ -1,79 +1,104 @@
-import React, { useEffect, useState, createContext } from 'react'
+import React, { useEffect, useState, createContext } from "react"
 import axios from "axios"
 
 export const AppContext = createContext()
 
 const api = axios.create({
-    baseURL: "http://localhost:3000/api/v1"
+  baseURL: "http://localhost:3000/api/v1"
 })
 
 const AppContextProvider = ({ children }) => {
 
-    const [token, setToken] = useState(localStorage.getItem("token"))
-    const [user, setUser] = useState(null)
-    const [isOwner, setIsOwner] = useState(false)
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [car, setCar] = useState('')
+  const [token, setToken] = useState(localStorage.getItem("token"))
+  const [user, setUser] = useState( JSON.parse(localStorage.getItem("user")))
+  const [isOwner, setIsOwner] = useState(false)
+  const [car, setCar] = useState([])
+  const [showLogin, setShowLogin] = useState(false)
 
-    useEffect(() => {
-        console.log("Token from state:", token)
-        console.log("Token from localStorage:", localStorage.getItem("token"))
-
-        if (token) {
-            api.defaults.headers.common["Authorization"] = `Bearer ${token}`
-            setIsLoggedIn(true)
-            getUser()
-        }
-    }, [token])   
-
-
-    const getUser = async () => {
-        try {
-            const { data } = await api.get("/user/getuser")
-             console.log(data)
-            setUser(data)
-            setIsOwner(data.role === "owner")
-        } catch (error) {
-            logout()
-        }
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token")
+       
+    if (storedToken) {
+      setToken(storedToken)
+      api.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`
+      getUser(storedToken)
     }
+  }, [])
 
-    const logout = () => {
-        setToken(null)
-        setUser(null)
-        setIsLoggedIn(false)
-        localStorage.removeItem("token")
-        delete api.defaults.headers.common["Authorization"]
+  useEffect(() => {
+    console.log("Token state:", token)
+    console.log("Stored token:", localStorage.getItem("token"))
+
+    if (token) {
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`
+      getUser(token)
     }
+  }, [token])
+
+  const getUser = async (authToken) => {
+    try {
+      const { data } = await api.get("/user/getuser", {
+        headers: {
+          Authorization: `Bearer ${authToken || token}`
+        }
+      })
+
+      console.log("User Data:", data)
+
+      setUser(data)
+      setIsOwner(data.role === "owner")
+      localStorage.setItem("user", JSON.stringify(data))
+
+    } catch (error) {
+      console.log("GetUser Error:", error)
+      logout()
+    }
+  }
+
+  const logout = () => {
+    setToken(null)
+    setUser(null)
+    setIsOwner(false)
+
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+
+    delete api.defaults.headers.common["Authorization"]
+  }
+
   const getCars = async () => {
     try {
-      const { data } = await api.get("/car/getallcar");
-      setCar(data);
-      console.log(data)
+      const { data } = await api.get("/car/getallcar")
+      console.log("Cars:", data)
+      setCar(data)
     } catch (error) {
-      console.log(error)
-    } 
+      console.log("Cars Error:", error)
+    }
   }
 
   useEffect(() => {
     getCars()
   }, [])
 
-    return (
-        <AppContext.Provider value={{
-            token,
-            setToken,
-            car,
-            setCar,
-            user,
-            setUser,
-            isOwner,
-            isLoggedIn,
-            logout
-        }}>
-            {children}
-        </AppContext.Provider>
-    )
+  return (
+    <AppContext.Provider
+      value={{
+        token,
+        setToken,
+        user,
+        setUser,
+        car,
+        setCar,
+        isOwner,
+        logout,
+        showLogin,
+        setShowLogin,
+        api
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  )
 }
 
 export default AppContextProvider
