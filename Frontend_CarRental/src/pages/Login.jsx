@@ -25,13 +25,15 @@ const { setToken } = useContext(AppContext)
       })
       console.log("Login success:", res.data)
       setToken(res.data.Token)
+      setUser(res.data.user)
       localStorage.setItem("token", res.data.Token)
       localStorage.setItem("user", JSON.stringify(res.data.user))
 
+      setShowLogin(false) 
       setEmail('')
       setPassword('')
       console.log("submited")
-      setShowLogin(false)  
+     
 
     } catch (err) {
       console.log("Login failed:", err.response?.data || err.message)
@@ -80,6 +82,7 @@ const { setToken } = useContext(AppContext)
           Don’t have an account?{" "}
           <Link
             to="/register"
+            onClick={()=>{setShowLogin(false)}}
             className="text-blue-600 font-semibold hover:underline"
           >
             Sign up

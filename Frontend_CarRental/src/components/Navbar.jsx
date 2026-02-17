@@ -1,9 +1,17 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets'
 import { NavLink, Link } from 'react-router-dom'
+// import { useContext } from "react"
+import { AppContext } from "../context/AppContext"
 
-const Navbar = ({setShowLogin}) => {
-      const [sidebarOpen, setSidebarOpen] = useState(false)
+
+const Navbar = ({ setShowLogin }) => {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const { user, logout } = useContext(AppContext)
+
+
+
   return (
     <div className=' bg-gray-200 flex items-center justify-evenly h-20'>
 
@@ -51,12 +59,28 @@ const Navbar = ({setShowLogin}) => {
 
         <div className='flex items-center justify-center gap-x-10'>
           <Link to={'/owner'}>
-           <button className='text-xl cursor-pointer  font-normal' >DashBoard</button>
+            <button className='text-xl cursor-pointer  font-normal' >DashBoard</button>
           </Link>
-          <button 
+          {/* <button 
           onClick={()=>{setShowLogin(true)}}
-           className='py-3 px-6 text-white bg-blue-600 border-2 border-blue-800 rounded-3xl'>Login</button>
-      
+           className='py-3 px-6 text-white bg-blue-600 border-2 border-blue-800 rounded-3xl'>Login
+           </button> */}
+          {user ? (
+            <button
+              onClick={logout}
+              className="py-3 px-6 text-white bg-red-600 border-2 border-red-800 rounded-3xl"
+            >
+              Logout
+            </button>
+          ) : (
+            <button
+              onClick={() => setShowLogin(true)}
+              className="py-3 px-6 text-white bg-blue-600 border-2 border-blue-800 rounded-3xl"
+            >
+              Login
+            </button>
+          )}
+
         </div>
 
 
