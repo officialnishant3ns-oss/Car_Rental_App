@@ -14,8 +14,11 @@ import Dashboard from './pages/owner/Dashboard'
 import Addcar from './pages/owner/Addcar'
 import ManageCar from './pages/owner/ManageCar'
 import ManageBooking from './pages/owner/ManageBooking'
+import Login from './pages/Login'
 
 function App() {
+  // localStorage.clear()
+
   const [showLogin, setShowLogin] = useState(false)
 
   const location = useLocation()
@@ -23,6 +26,7 @@ function App() {
 
   return (
     <> 
+   {showLogin && <Login setShowLogin={setShowLogin}/>}
       {!isOwnerPath && <Navbar setShowLogin={setShowLogin} />}
       <Routes>
         <Route path='/' element={<Home />} />

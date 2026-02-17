@@ -1,46 +1,62 @@
-import React, { useEffect, useState } from 'react'
-import axios from "axios";
+import React, { useEffect, useState, createContext } from 'react'
+import axios from "axios"
+
+export const AppContext = createContext()
 
 const api = axios.create({
     baseURL: "http://localhost:3000/api/v1"
 })
-const AppContext = ({ children }) => {
 
-    const [token, setTokens] = useState(localStorage.getItem('token'))
+const AppContextProvider = ({ children }) => {
+
+    const [token, setToken] = useState(localStorage.getItem("token"))
     const [user, setUser] = useState(null)
-    const [car, setCar] = useState(null)
     const [isOwner, setIsOwner] = useState(false)
     const [isLoggedIn, setIsLoggedIn] = useState(false)
 
     useEffect(() => {
+        console.log("Token from state:", token)
+        console.log("Token from localStorage:", localStorage.getItem("token"))
+
         if (token) {
             api.defaults.headers.common["Authorization"] = `Bearer ${token}`
-            localStorage.setItem("token", token)
-            setIsLoggedIn(true);
-            getUser();
+            setIsLoggedIn(true)
+            getUser()
         }
-    }, []
-    )
+    }, [token])   
 
 
     const getUser = async () => {
         try {
-            const { data } = await api.get("/user/getuser");
+            const { data } = await api.get("/user/getuser")
+             console.log(data)
             setUser(data)
-            if (data.role === "owner") {
-                setIsOwner(true);
-            } else {
-                setIsOwner(false)
-            }
-
+            setIsOwner(data.role === "owner")
         } catch (error) {
-            logout();
+            logout()
         }
     }
 
+    const logout = () => {
+        setToken(null)
+        setUser(null)
+        setIsLoggedIn(false)
+        localStorage.removeItem("token")
+        delete api.defaults.headers.common["Authorization"]
+    }
+
     return (
-        <AppContext.Provider value={{ token, user }}>{children}</AppContext.Provider>
+        <AppContext.Provider value={{
+            token,
+            setToken,
+            user,
+            isOwner,
+            isLoggedIn,
+            logout
+        }}>
+            {children}
+        </AppContext.Provider>
     )
 }
 
-export default AppContext
+export default AppContextProvider

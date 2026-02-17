@@ -50,10 +50,12 @@ const Navbar = ({setShowLogin}) => {
         </div>
 
         <div className='flex items-center justify-center gap-x-10'>
-        <Link to={'/owner'}>
-           <button className='text-xl font-normal' >DashBoard</button>
+          <Link to={'/owner'}>
+           <button className='text-xl cursor-pointer  font-normal' >DashBoard</button>
           </Link>
-          <button  className='p-3 text-white bg-blue-600 border-2 border-blue-800 rounded-3xl'>Sign Up</button>
+          <button 
+          onClick={()=>{setShowLogin(true)}}
+           className='py-3 px-6 text-white bg-blue-600 border-2 border-blue-800 rounded-3xl'>Login</button>
       
         </div>
 
