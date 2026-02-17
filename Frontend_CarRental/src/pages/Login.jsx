@@ -7,7 +7,7 @@ import { AppContext } from "../context/AppContext"
 
 
 const Login = ({setShowLogin}) => {
-const { setToken } = useContext(AppContext)
+const { setToken,setUser } = useContext(AppContext)
 
 
   const [email, setEmail] = useState('')
@@ -23,7 +23,7 @@ const { setToken } = useContext(AppContext)
         email,
         password
       })
-      console.log("Login success:", res.data)
+      // console.log("Login success:", res.data)
       setToken(res.data.Token)
       setUser(res.data.user)
       localStorage.setItem("token", res.data.Token)
@@ -82,7 +82,7 @@ const { setToken } = useContext(AppContext)
           Don’t have an account?{" "}
           <Link
             to="/register"
-            onClick={()=>{setShowLogin(false)}}
+            // onClick={()=>{setShowLogin(false)}}
             className="text-blue-600 font-semibold hover:underline"
           >
             Sign up

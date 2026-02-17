@@ -13,6 +13,7 @@ const AppContextProvider = ({ children }) => {
     const [user, setUser] = useState(null)
     const [isOwner, setIsOwner] = useState(false)
     const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const [car, setCar] = useState('')
 
     useEffect(() => {
         console.log("Token from state:", token)
@@ -44,12 +45,28 @@ const AppContextProvider = ({ children }) => {
         localStorage.removeItem("token")
         delete api.defaults.headers.common["Authorization"]
     }
+  const getCars = async () => {
+    try {
+      const { data } = await api.get("/car/getallcar");
+      setCar(data);
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+    } 
+  }
+
+  useEffect(() => {
+    getCars()
+  }, [])
 
     return (
         <AppContext.Provider value={{
             token,
             setToken,
+            car,
+            setCar,
             user,
+            setUser,
             isOwner,
             isLoggedIn,
             logout

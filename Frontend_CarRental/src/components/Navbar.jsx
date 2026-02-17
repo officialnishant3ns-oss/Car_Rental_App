@@ -68,14 +68,14 @@ const Navbar = ({ setShowLogin }) => {
           {user ? (
             <button
               onClick={logout}
-              className="py-3 px-6 text-white bg-red-600 border-2 border-red-800 rounded-3xl"
+              className="py-3 px-6 text-white bg-red-500 border-3 border-red-800 rounded-3xl"
             >
               Logout
             </button>
           ) : (
             <button
               onClick={() => setShowLogin(true)}
-              className="py-3 px-6 text-white bg-blue-600 border-2 border-blue-800 rounded-3xl"
+              className="py-3 px-6 text-white bg-blue-600 border-3 border-blue-800 rounded-3xl"
             >
               Login
             </button>
