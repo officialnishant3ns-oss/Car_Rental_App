@@ -14,28 +14,19 @@ const Login = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-
   useEffect(() => {
     setUsername("")
     setEmail("")
     setPassword("")
-    setError("")
   }, [mode])
 
   const submitHandler = async (e) => {
     e.preventDefault()
     setLoading(true)
-    setError("")
 
     try {
-      const endpoint =
-        mode === "login" ? "/user/login" : "/user/register"
-
-      const payload =
-        mode === "login"
-          ? { email, password }
-          : { fullname: username, email, password }
+     const endpoint = mode === "login" ? "/user/login" : "/user/register"
+      const payload = mode === "login"   ? { email, password }: { fullname: username, email, password}
 
       const res = await api.post(endpoint, payload)
 
@@ -111,9 +102,6 @@ const Login = () => {
           />
         </div>
 
-        {error && (
-          <p className="text-red-500 text-sm text-center">{error}</p>
-        )}
 
         <div className="text-sm text-center text-gray-600">
           {mode === "login" ? (

@@ -33,7 +33,6 @@ const AppContextProvider = ({ children }) => {
     if (token) {
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`
       getUser(token)
-      getCars()
     }
   }, [token])
 
@@ -50,8 +49,7 @@ const AppContextProvider = ({ children }) => {
       setUser(data)
       setIsOwner(data.role === "owner")
       localStorage.setItem("user", JSON.stringify(data))
-      getCars()
-
+   
     } catch (error) {
       toast.error("Session expired. Please login again", error)
       console.log("GetUser Error:", error)
@@ -74,7 +72,11 @@ const AppContextProvider = ({ children }) => {
 
   const getCars = async () => {
     try {
-      const { data } = await api.get("/car/getallcar")
+        const { data } = await api.get("/car/getallcar", {
+        headers: {
+          Authorization: `Bearer ${authToken || token}`
+        }
+      })
       console.log("Cars:", data)
       setCar(data)
     } catch (error) {
@@ -83,9 +85,9 @@ const AppContextProvider = ({ children }) => {
     }
   }
 
-  // useEffect(() => {
-  //   getCars()
-  // }, [])
+  useEffect(() => {
+    getCars()
+  }, [])
 
   return (
     <AppContext.Provider

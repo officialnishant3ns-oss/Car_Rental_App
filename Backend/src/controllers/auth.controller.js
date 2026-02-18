@@ -16,15 +16,29 @@ const Register = async (req, res) => {
             email: email,
             password: password
         })
+        const Token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRETE, { expiresIn: process.env.TOKEN_EXPIRY })
+
+
         const createdUser = await User.findById(user._id).select("-otp -password")
         if (!createdUser) {
             return res.status(500).json({ message: "Something went wrong creating the user" })
         }
-        return res.status(200).json({ success: true, message: "User Register successfully", user: createdUser })
-
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+        return res
+            .status(200)
+            .cookie("Token", Token, options)
+            .json({
+                success: true,
+                message: "User Register successfully",
+                user: createdUser,
+                Token
+            })
     } catch (error) {
         console.error("Register Error::", error)
-        return res.status(500).json({success: true, message: "Something went wrong while Registering User" })
+        return res.status(500).json({ success: true, message: "Something went wrong while Registering User" })
     }
 }
 const Login = async (req, res) => {
@@ -69,13 +83,13 @@ const Login = async (req, res) => {
 }
 const Logout = async (req, res) => {
     try {
-  
-         const options = {
+
+        const options = {
             httpOnly: true,
             secure: true
         }
         return res.status(200).clearCookie("Token", options)
-            .json({   success: true,message: "User SignOut Successfully" }
+            .json({ success: true, message: "User SignOut Successfully" }
             )
 
 
@@ -86,22 +100,22 @@ const Logout = async (req, res) => {
     }
 }
 const getUser = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select('-password -createdAt -updatedAt -__v')
-    if (!user) {
-      return res.status(404).json({ message: "User not found" })
-    }
-    return res.status(200).json({
-      message: "User fetched successfully",
-      user
-    })
+    try {
+        const user = await User.findById(req.user.id).select('-password -createdAt -updatedAt -__v')
+        if (!user) {
+            return res.status(404).json({ message: "User not found" })
+        }
+        return res.status(200).json({
+            message: "User fetched successfully",
+            user
+        })
 
-  } catch (error) {
-    console.error("Get User Error:", error);
-    return res.status(500).json({ message: "Server error while fetching user" })
-  }
+    } catch (error) {
+        console.error("Get User Error:", error);
+        return res.status(500).json({ message: "Server error while fetching user" })
+    }
 }
 
 
 
-export { Register, Login,Logout,getUser }
+export { Register, Login, Logout, getUser }
