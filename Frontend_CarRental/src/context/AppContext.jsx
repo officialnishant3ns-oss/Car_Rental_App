@@ -49,9 +49,9 @@ const AppContextProvider = ({ children }) => {
       setUser(data)
       setIsOwner(data.role === "owner")
       localStorage.setItem("user", JSON.stringify(data))
-   
+
     } catch (error) {
-      toast.error("Session expired. Please login again", error)
+       toast.error("Session expired. Please login again",error)
       console.log("GetUser Error:", error)
       logout()
     }
@@ -72,16 +72,12 @@ const AppContextProvider = ({ children }) => {
 
   const getCars = async () => {
     try {
-        const { data } = await api.get("/car/getallcar", {
-        headers: {
-          Authorization: `Bearer ${authToken || token}`
-        }
-      })
+      const { data } = await api.get("/car/getallcar")
       console.log("Cars:", data)
       setCar(data)
     } catch (error) {
       console.log("Cars Error:", error)
-      toast.error("Failed to fetch cars", error)
+      toast.error("Failed to fetch cars",error)
     }
   }
 

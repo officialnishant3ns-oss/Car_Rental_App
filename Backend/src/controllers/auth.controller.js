@@ -115,7 +115,29 @@ const getUser = async (req, res) => {
         return res.status(500).json({ message: "Server error while fetching user" })
     }
 }
+const ChangeRole = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { role: "owner" },
+      { new: true, select: "-password -__v" }
+    )
+
+    if (!user)
+      return res.status(404).json({ message: "User not found" })
+
+    res.json({
+      message: "Role updated successfully",
+      user
+    })
+
+  } catch (error) {
+    console.error("ChangeRole Error:", error)
+    res.status(500).json({ message: "Server error while updating role" })
+  }
+}
 
 
 
-export { Register, Login, Logout, getUser }
+
+export { Register, Login, Logout, getUser,ChangeRole }

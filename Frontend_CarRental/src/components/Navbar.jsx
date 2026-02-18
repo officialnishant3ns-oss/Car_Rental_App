@@ -62,6 +62,8 @@ const Navbar = () => {
           <Link to={'/owner'}>
             <button className='text-xl cursor-pointer  font-normal' >DashBoard</button>
           </Link>
+
+          
           {/* <button 
           onClick={()=>{setShowLogin(true)}}
            className='py-3 px-6 text-white bg-blue-600 border-2 border-blue-800 rounded-3xl'>Login
