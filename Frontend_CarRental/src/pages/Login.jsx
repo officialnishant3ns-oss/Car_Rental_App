@@ -1,10 +1,14 @@
 import React, { useState, useContext, useEffect } from "react"
 import api from "../api/api.js"
 import { AppContext } from "../context/AppContext"
+import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
 
-const Login = ({ setShowLogin }) => {
-  const { setToken, setUser } = useContext(AppContext)
-
+const Login = () => {
+  const { setToken, setUser,showLogin, setShowLogin, } = useContext(AppContext)
+       
+  const navigate = useNavigate()
+  
   const [mode, setMode] = useState("login")
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
@@ -37,22 +41,21 @@ const Login = ({ setShowLogin }) => {
 
       const token = res.data.Token
       const user = res.data.user
-    console.log(res.data)
+      console.log(res.data)
       setToken(token)
       setUser(user)
+      navigate('/')
 
       localStorage.setItem("token", token)
       localStorage.setItem("user", JSON.stringify(user))
-
+      
       setShowLogin(false)
+      toast.success("Login successful")
 
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
+      toast.error( err.response?.data?.message ||
         err.response?.data?.msg ||
-        err.message ||
-        "Request failed"
-      )
+        err.message )
     } finally {
       setLoading(false)
     }

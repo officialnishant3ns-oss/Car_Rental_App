@@ -5,10 +5,11 @@ import { NavLink, Link } from 'react-router-dom'
 import { AppContext } from "../context/AppContext"
 
 
-const Navbar = ({ setShowLogin }) => {
+const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  const { user, logout } = useContext(AppContext)
+  const { user, logout,showLogin,setShowLogin } = useContext(AppContext)
+        
 
 
 

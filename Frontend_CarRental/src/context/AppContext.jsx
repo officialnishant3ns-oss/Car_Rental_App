@@ -1,5 +1,6 @@
 import React, { useEffect, useState, createContext } from "react"
 import axios from "axios"
+import { toast } from "react-toastify"
 
 export const AppContext = createContext()
 
@@ -10,14 +11,14 @@ const api = axios.create({
 const AppContextProvider = ({ children }) => {
 
   const [token, setToken] = useState(localStorage.getItem("token"))
-  const [user, setUser] = useState( JSON.parse(localStorage.getItem("user")))
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")))
   const [isOwner, setIsOwner] = useState(false)
   const [car, setCar] = useState([])
   const [showLogin, setShowLogin] = useState(false)
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token")
-       
+
     if (storedToken) {
       setToken(storedToken)
       api.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`
@@ -32,6 +33,7 @@ const AppContextProvider = ({ children }) => {
     if (token) {
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`
       getUser(token)
+      getCars()
     }
   }, [token])
 
@@ -48,8 +50,10 @@ const AppContextProvider = ({ children }) => {
       setUser(data)
       setIsOwner(data.role === "owner")
       localStorage.setItem("user", JSON.stringify(data))
+      getCars()
 
     } catch (error) {
+      toast.error("Session expired. Please login again", error)
       console.log("GetUser Error:", error)
       logout()
     }
@@ -64,6 +68,8 @@ const AppContextProvider = ({ children }) => {
     localStorage.removeItem("user")
 
     delete api.defaults.headers.common["Authorization"]
+
+    toast.info("Logged out successfully")
   }
 
   const getCars = async () => {
@@ -73,12 +79,13 @@ const AppContextProvider = ({ children }) => {
       setCar(data)
     } catch (error) {
       console.log("Cars Error:", error)
+      toast.error("Failed to fetch cars", error)
     }
   }
 
-  useEffect(() => {
-    getCars()
-  }, [])
+  // useEffect(() => {
+  //   getCars()
+  // }, [])
 
   return (
     <AppContext.Provider

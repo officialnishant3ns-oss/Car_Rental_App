@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
@@ -15,33 +15,45 @@ import Addcar from './pages/owner/Addcar'
 import ManageCar from './pages/owner/ManageCar'
 import ManageBooking from './pages/owner/ManageBooking'
 import Login from './pages/Login'
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { AppContext } from './context/AppContext'
 
 function App() {
   // localStorage.clear()
 
-  const [showLogin, setShowLogin] = useState(false)
 
+ const {showLogin, setShowLogin}  = useContext(AppContext)
   const location = useLocation()
   const isOwnerPath = location.pathname.startsWith('/owner')
 
   return (
-    <> 
-   {showLogin && <Login setShowLogin={setShowLogin}/>}
-      {!isOwnerPath && <Navbar setShowLogin={setShowLogin} />}
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+      />
+      {showLogin && <Login  />}
+      {!isOwnerPath && <Navbar  />}
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/car' element={<Car />} />
         <Route path='/car-details/:id' element={<Cardetails />} />
         <Route path='/my-bookings' element={<Booking />} />
-        <Route path='owner' element={<Layout/>} >
+        <Route path='owner' element={<Layout />} >
           <Route index element={<Dashboard />} />
           <Route path='add-car' element={<Addcar />} />
-          <Route path='manage-cars' element={<ManageCar />} />       
-          <Route path='manage-bookings' element={<ManageBooking />} />       
+          <Route path='manage-cars' element={<ManageCar />} />
+          <Route path='manage-bookings' element={<ManageBooking />} />
         </Route>
       </Routes>
 
-{!isOwnerPath &&  <Footer/>}
+      {!isOwnerPath && <Footer />}
     </>
   )
 }
