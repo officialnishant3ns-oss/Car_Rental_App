@@ -45,9 +45,7 @@ const AppContextProvider = ({ children }) => {
       })
 
       console.log("User Data:", data)
-
       setUser(data)
-      setIsOwner(data.role === "owner")
       localStorage.setItem("user", JSON.stringify(data))
 
     } catch (error) {
@@ -93,9 +91,9 @@ const changeRole = async () => {
         }
       }
     );
-
+  //  console.log(data)
+   setIsOwner(true)
     if (data?.success) {
-      setIsOwner(true)
       toast.success(data.message)
     } else {
       toast.error(data?.message || "Role update failed")

@@ -9,7 +9,7 @@ const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const { user, logout, showLogin, setShowLogin, isOwner, setIsOwner, changeRole } = useContext(AppContext)
- 
+  console.log(isOwner)
   const navigate = useNavigate()
 
 
@@ -77,7 +77,7 @@ const Navbar = () => {
           {user ? (
             <button
               onClick={logout}
-              className="py-3 px-6 text-white bg-red-500 border-3 border-red-800 rounded-3xl"
+              className="py-3 px-6 text-white bg-red-600 border-3 border-gray-500 rounded-3xl"
             >
               Logout
             </button>
