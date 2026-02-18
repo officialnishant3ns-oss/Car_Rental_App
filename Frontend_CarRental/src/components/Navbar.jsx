@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink, Link, useNavigate } from 'react-router-dom'
 // import { useContext } from "react"
 import { AppContext } from "../context/AppContext"
 
@@ -8,8 +8,9 @@ import { AppContext } from "../context/AppContext"
 const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  const { user, logout,showLogin,setShowLogin } = useContext(AppContext)
-        
+  const { user, logout, showLogin, setShowLogin, isOwner, setIsOwner, changeRole } = useContext(AppContext)
+ 
+  const navigate = useNavigate()
 
 
 
@@ -59,15 +60,20 @@ const Navbar = () => {
         </div>
 
         <div className='flex items-center justify-center gap-x-10'>
-          <Link to={'/owner'}>
-            <button className='text-xl cursor-pointer  font-normal' >DashBoard</button>
-          </Link>
 
-          
-          {/* <button 
-          onClick={()=>{setShowLogin(true)}}
-           className='py-3 px-6 text-white bg-blue-600 border-2 border-blue-800 rounded-3xl'>Login
-           </button> */}
+          <button
+            //  onClick={()=>{isOwner ? navigate('/owner'):changeRole() }}
+            onClick={async () => {
+              if (isOwner) {
+                navigate('/owner')
+              } else {
+                await changeRole()
+              }
+            }}
+
+            className='text-xl cursor-pointer  font-normal' >{isOwner ? 'DashBoard' : 'List car'}
+          </button>
+
           {user ? (
             <button
               onClick={logout}

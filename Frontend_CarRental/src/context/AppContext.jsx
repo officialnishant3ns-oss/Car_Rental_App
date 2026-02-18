@@ -36,7 +36,7 @@ const AppContextProvider = ({ children }) => {
     }
   }, [token])
 
-  const getUser = async (authToken) => {
+ const getUser = async (authToken) => {
     try {
       const { data } = await api.get("/user/getuser", {
         headers: {
@@ -56,7 +56,6 @@ const AppContextProvider = ({ children }) => {
       logout()
     }
   }
-
   const logout = () => {
     setToken(null)
     setUser(null)
@@ -69,7 +68,6 @@ const AppContextProvider = ({ children }) => {
 
     toast.info("Logged out successfully")
   }
-
   const getCars = async () => {
     try {
       const { data } = await api.get("/car/getallcar")
@@ -80,10 +78,39 @@ const AppContextProvider = ({ children }) => {
       toast.error("Failed to fetch cars",error)
     }
   }
-
   useEffect(() => {
     getCars()
   }, [])
+
+const changeRole = async () => {
+  try {
+    const { data } = await api.patch(
+      "/user/change-role",
+      {}, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    if (data?.success) {
+      setIsOwner(true)
+      toast.success(data.message)
+    } else {
+      toast.error(data?.message || "Role update failed")
+    }
+
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message ||
+      error.message ||
+      "Something went wrong"
+    )
+  }
+}
+
+
 
   return (
     <AppContext.Provider
@@ -98,7 +125,8 @@ const AppContextProvider = ({ children }) => {
         logout,
         showLogin,
         setShowLogin,
-        api
+        api,
+        changeRole
       }}
     >
       {children}
