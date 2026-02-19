@@ -1,16 +1,17 @@
 import Car from "../models/car.models.js"
 
+
 const AddCar = async (req, res) => {
     try {
-        const { carname, brand, category, fuelType, seats, pricePerDay, status, location } = req.body
+        const { brand, model, year, category, fuel_type, seating_capacity, transmission, pricePerDay, description, location, isAvaliable } = req.body
 
-        if (!carname || !brand || !category || !fuelType || !seats || !pricePerDay || !location) {
+        if (!brand || !category || !fuel_type || !seating_capacity || !pricePerDay || !location) {
             return res.status(400).json({
                 success: false,
                 message: "All required fields must be provided"
             })
         }
-        const existingCar = await Car.findOne({ carname, brand })
+        const existingCar = await Car.findOne({ model, brand })
         if (existingCar) {
             return res.status(409).json({
                 success: false,
@@ -20,15 +21,17 @@ const AddCar = async (req, res) => {
         //images >>cloudinary setup
 
         const car = await Car.create({
-            carname,
             brand,
+            model,
+            year,
             category,
-            fuelType,
-            seats,
+            fuel_type,
+            seating_capacity,
+            transmission,
             pricePerDay,
-            status,
-            location
-
+            description,
+            location,
+            isAvaliable
         })
         return res.status(201).json({ status: true, message: "Car added succesfully", data: car })
 

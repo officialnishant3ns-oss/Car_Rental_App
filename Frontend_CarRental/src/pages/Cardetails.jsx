@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { assets, dummyCarData } from '../assets/assets'
 import Loader from '../components/Loader'
+import { AppContext } from '../context/AppContext'
 
 const Cardetails = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const [car, setCar] = useState(null)
+  // const [car, setCar] = useState(null)
+    const {car,setCar} = useContext(AppContext)
+     
 
   
  const submitHandler = async(e) => {

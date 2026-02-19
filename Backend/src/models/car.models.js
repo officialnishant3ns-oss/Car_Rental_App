@@ -1,35 +1,35 @@
 import mongoose from "mongoose"
 const carSchema = new mongoose.Schema({
-    carname: {
-        type: String,
-        required: true,
-        trim: true,
-    },
+   
+    // owner: {
+    //     type: mongoose.,
+    //     ref:'User'
+    // },
 
     brand: {
         type: String,
         required: true,
         trim: true
     },
-    year:{
-        type:Number
+    year: {
+        type: Number
     },
-    
+    model: {
+        type: String
+    },
+
     category: {
         type: String,
-        enum: ["sedan", "suv", "hatchback", "luxury", "van"],
         required: true,
         lowercase: true
     },
 
-    fuelType: {
+    fuel_type: {
         type: String,
-        enum: ["petrol", "diesel", "electric", "hybrid"],
-        required: true,
         lowercase: true
     },
 
-    seats: {
+    seating_capacity: {
         type: Number,
         required: true,
         min: 1,
@@ -41,28 +41,24 @@ const carSchema = new mongoose.Schema({
         required: true,
         min: 0
     },
-    transmission:{
-        type:String
+    transmission: {
+        type: String
     },
 
-    images: {
+    image: {
         type: [String],
         default: []
     },
 
-    status: {
-        type: String,
-        enum: ["available", "booked", "maintenance"],
-        default: "available",
-        index: true
-    },
-    isAvailable:{
-        type:Boolean,
-        default:true
+    isAvailable: {
+        type: Boolean,
+        default: true
     },
     location: {
-        city: String,
-        branch: String
+      type:String
+    },
+    description: {
+        type: String
     }
 },
     {
