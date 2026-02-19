@@ -1,4 +1,6 @@
 import Car from "../models/car.models.js"
+import fs from 'fs'
+import imagekit from "../utils/ImageKit.js"
 
 
 const AddCar = async (req, res) => {
@@ -19,7 +21,30 @@ const AddCar = async (req, res) => {
             })
         }
         //images >>ImageKit setup
-        const imageFile = req.files
+        const imageFile = req.file
+        if (!imageFile) {
+            return res.status(400).json({
+                success: false,
+                message: "Image file is required"
+            })
+        }
+        const FileBuffer = fs.readFileSync(imageFile.path)
+
+        const response = await imagekit.upload({
+            file: FileBuffer,
+            fileName: imageFile.originalname,
+            folder: '/cars'
+        })
+        var imageURL = imagekit.url({
+            path: response.filePath,
+            transformation: [
+                { width: '1280' },
+                { quality: 'auto' },
+                { format: 'webp' }
+            ]
+        })
+        const image = imageURL
+
 
         const car = await Car.create({
             brand,
@@ -32,6 +57,7 @@ const AddCar = async (req, res) => {
             pricePerDay,
             description,
             location,
+            image,
             isAvaliable
         })
         return res.status(201).json({ status: true, message: "Car added succesfully", data: car })
