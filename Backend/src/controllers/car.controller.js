@@ -18,7 +18,8 @@ const AddCar = async (req, res) => {
                 message: "Car already exists"
             })
         }
-        //images >>cloudinary setup
+        //images >>ImageKit setup
+        const imageFile = req.files
 
         const car = await Car.create({
             brand,

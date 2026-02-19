@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { dummyUserData, ownerMenuLinks } from '../../assets/assets'
 import { NavLink } from 'react-router-dom'
+import { AppContext } from '../../context/AppContext'
 
 const Sidebar = () => {
-  const user = dummyUserData
+  const {user,isOwner} = useContext(AppContext)
 
   return (
     <div className="relative top-0 left-0 w-72 h-screen border-r bg-white shadow-sm">

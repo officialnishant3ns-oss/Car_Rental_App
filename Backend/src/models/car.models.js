@@ -1,32 +1,30 @@
 import mongoose from "mongoose"
 const carSchema = new mongoose.Schema({
-   
-    // owner: {
-    //     type: mongoose.,
-    //     ref:'User'
-    // },
 
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     brand: {
         type: String,
-        required: true,
-        trim: true
-    },
-    year: {
-        type: Number
+        required: true
     },
     model: {
-        type: String
+        type: String,
+        required: true,
+    },
+    year: {
+        type: Number,
+        required: true,
     },
 
     category: {
         type: String,
-        required: true,
-        lowercase: true
+        required: true
     },
 
     fuel_type: {
         type: String,
-        lowercase: true
     },
 
     seating_capacity: {
@@ -42,12 +40,13 @@ const carSchema = new mongoose.Schema({
         min: 0
     },
     transmission: {
-        type: String
+        type: String,
+        required: true,
     },
 
     image: {
-        type: [String],
-        default: []
+        type: String,
+        required: true
     },
 
     isAvailable: {
@@ -55,7 +54,7 @@ const carSchema = new mongoose.Schema({
         default: true
     },
     location: {
-      type:String
+        type: String
     },
     description: {
         type: String
