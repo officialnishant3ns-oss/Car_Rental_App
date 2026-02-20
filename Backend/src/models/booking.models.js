@@ -11,35 +11,33 @@ const bookingSchema = new mongoose.Schema({
         ref: "Car",
         required: true
     },
-    startDate: {
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    pickupdate: {
         type: Date,
         required: true
     },
 
-    endDate: {
+    returnupdate: {
         type: Date,
         required: true
     },
-
-    pickupLocation: {
-        type: String
+    totalprice: {
+        type: Number
     },
-    dropLocation: {
-        type: String
+    status: {
+        type: String,
+        enum: ['PENDING', 'CONFIRMED', 'CANCELED'],
+        default: 'PENDING'
     },
-      totalAmount: {
-        type:Number
-      },
-      status:{
-        type:String,
-        enum:['PENDING','CONFIRMED','CANCELED','COMPLETED'],
-        default:'PENDING'
-      },
-      paymentstatus:{
-        type:String,
-        enum:['PENDING','PAID','FAILED'],
-        default:'PENDING'
-      }
+    // paymentstatus: {
+    //     type: String,
+    //     enum: ['PENDING', 'PAID', 'FAILED'],
+    //     default: 'PENDING'
+    // }
 
 },
     {

@@ -5,6 +5,7 @@ import imagekit from "../utils/ImageKit.js"
 
 const AddCar = async (req, res) => {
     try {
+        const _id = req.user._id
         const { brand, model, year, category, fuel_type, seating_capacity, transmission, pricePerDay, description, location, isAvaliable } = req.body
 
         if (!brand || !category || !fuel_type || !seating_capacity || !pricePerDay || !location) {
@@ -47,6 +48,7 @@ const AddCar = async (req, res) => {
 
 
         const car = await Car.create({
+            owner: _id,
             brand,
             model,
             year,
@@ -68,6 +70,97 @@ const AddCar = async (req, res) => {
 
     }
 }
+const getOwnerCar = async (req, res) => {
+    try {
+        const { _id } = req.user.id
+        const car = await Car.find({ owner: _id })
+        if (!car) {
+            return res.status(400).json({ success: false, message: "No cars found for this owner" })
+        }
+        return res.status(200).json({
+            success: true,
+            count: car.length,
+            car
+        })
+
+    } catch (error) {
+        console.error("Register Error::", error)
+        return res.status(500).json({ message: "Something went wrong while getting car data " })
+
+    }
+}
+const toggleAvailability = async (req, res) => {
+    try {
+        const userId = req.user.id
+        const { carId } = req.body
+
+        const car = await Car.findById(carId)
+
+        if (!car) {
+            return res.status(404).json({
+                success: false,
+                message: "Car not found"
+            })
+        }
+
+        if (car.owner?.toString() !== userId.toString()) {
+            return res.status(403).json({
+                success: false,
+                message: "Unauthorized"
+            })
+        }
+
+        car.isAvailable = !car.isAvailable
+        await car.save()
+
+        res.json({
+            success: true,
+            message: "Availability toggled"
+        })
+
+    } catch (error) {
+        console.error("Toggle Error:", error)
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        })
+    }
+}
+const deleteCar_Null = async (req, res) => {
+    try {
+        const { carId } = req.body
+
+        const car = await Car.findById(carId)
+        if (!car) {
+            return res.status(404).json({
+                success: false,
+                message: "Car not found"
+            })
+        }
+        if (car.owner?.toString() !== userId.toString()) {
+            return res.status(403).json({
+                success: false,
+                message: "Unauthorized"
+            })
+        }
+        car.owner = null
+        car.isAvailable = false
+        car.save()
+        res.json({
+            success: true,
+            message: "Car Deleted"
+        })
+
+    } catch (error) {
+        console.error("delete car Error:", error)
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        })
+    }
+}
+
+//for update car there
 const updateCar = async (req, res) => {
     try {
         const { id } = req.params
@@ -94,6 +187,7 @@ const updateCar = async (req, res) => {
         return res.status(500).json({ message: "Something went wrong while Updating car" })
     }
 }
+//by id deleted permanently
 const deleteCar = async (req, res) => {
     try {
         const { id } = req.params
@@ -175,4 +269,20 @@ const getCarSearch = async (req, res) => {
 
     }
 }
-export { AddCar, updateCar, deleteCar, getCarByid, getCarSearch }
+
+const dashboardData = async (req, res) => {
+    try {
+        const { _id, role } = req.user
+        if (role !== 'owner') {
+            return res.status(401).json({ message: "Unathorised access" })
+        }
+        const cars = await Car.find({ owner: _id })
+
+    } catch (error) {
+        console.error("Message Error ", error)
+        return res.status(500).json({ message: "Something went wrong while get carDetail Dashboard Data" })
+
+    }
+}
+
+export { AddCar, updateCar, deleteCar, getCarByid, getCarSearch, getOwnerCar, toggleAvailability, deleteCar_Null }
