@@ -21,5 +21,8 @@ app.use('/api/v1/user', UserRouter)
 import carRoutes from '../src/routes/car.routes.js'
 app.use('/api/v1/car',carRoutes)
 
+import carBooking from '../src/routes/booking.routes.js'
+app.use('api/v1/booking',carBooking)
+
 
 export default app
