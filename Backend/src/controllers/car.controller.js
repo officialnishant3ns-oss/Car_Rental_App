@@ -1,6 +1,7 @@
 import Car from "../models/car.models.js"
 import fs from 'fs'
 import imagekit from "../utils/ImageKit.js"
+import Booking from "../models/booking.models.js"
 
 
 const AddCar = async (req, res) => {
@@ -270,14 +271,31 @@ const getCarSearch = async (req, res) => {
     }
 }
 
-const dashboardData = async (req, res) => {
+const getDashboardData = async (req, res) => {
     try {
         const { _id, role } = req.user
         if (role !== 'owner') {
             return res.status(401).json({ message: "Unathorised access" })
         }
         const cars = await Car.find({ owner: _id })
+        const bookings = await Booking.find({ owner: _id }).populate('car').sort({ createdAt: -1 })
 
+        const pendingData = await Booking.find({ owner: _id, status: 'PENDING' })
+        const confirmData = await Booking.find({ owner: _id, status: 'CONFIRMED' })
+
+        const monthlyRevenue = bookings
+            .filter(booking => booking.status === "CONFIRMED")
+            .reduce((acc, booking) => acc + booking.totalprice, 0)
+
+        const dashboardData = {
+            totalCars: cars.length,
+            totalBookings: bookings.length,
+            pendingBookings: pendingData.length,
+            completeBookings: confirmData.length,
+            recentBookings: bookings.slice(0, 3),
+            monthlyRevenue
+        }
+        return res.status(200).json({ success: true, dashboardData })
     } catch (error) {
         console.error("Message Error ", error)
         return res.status(500).json({ message: "Something went wrong while get carDetail Dashboard Data" })
@@ -285,4 +303,4 @@ const dashboardData = async (req, res) => {
     }
 }
 
-export { AddCar, updateCar, deleteCar, getCarByid, getCarSearch, getOwnerCar, toggleAvailability, deleteCar_Null }
+export { AddCar, updateCar, deleteCar, getCarByid, getCarSearch, getOwnerCar, toggleAvailability, deleteCar_Null,getDashboardData }

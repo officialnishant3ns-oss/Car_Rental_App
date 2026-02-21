@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { AddCar, getCarByid, updateCar,deleteCar,getCarSearch,deleteCar_Null, getOwnerCar, toggleAvailability } from "../controllers/car.controller.js"
+import { AddCar, getCarByid, updateCar,deleteCar,getDashboardData,getCarSearch,deleteCar_Null, getOwnerCar, toggleAvailability } from "../controllers/car.controller.js"
 import  verifyJWT  from '../middleware/auth.middleware.js'
 import upload from "../middleware/multer.middleware.js"
 const router = Router()
@@ -13,6 +13,7 @@ router.get('/getallcar',getCarSearch)
 router.get('/getownercar',verifyJWT,getOwnerCar)
 router.post('/toggleavailablity',verifyJWT,toggleAvailability)
 router.post('/delete-car',verifyJWT,deleteCar_Null)
+router.get('/dashboard',verifyJWT,getDashboardData)
 
 
 export default router
