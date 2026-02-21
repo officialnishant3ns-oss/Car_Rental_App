@@ -30,12 +30,7 @@ const CarAvialableONsearch = async (req, res) => {
         }
         const checkedCars = await Promise.all(
             cars.map(async (car) => {
-                const conflict = await hasBookingConflict(
-                    car._id,
-                    new Date(pickupDate),
-                    new Date(returnDate)
-                )
-
+                const conflict = await hasBookingConflict(car._id, new Date(pickupDate), new Date(returnDate))
                 return conflict ? null : car;
             })
         )
@@ -61,27 +56,46 @@ const createBooking = async (req, res) => {
                 message: "All fields required"
             })
         }
+
         const start = new Date(pickupDate)
         const end = new Date(returnDate)
 
-        if (start >= end)
-            return res.status(400).json({ success: false, message: "Invalid dates" })
+        if (start >= end) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid date range"
+            })
+        }
+
+        if (start < new Date()) {
+            return res.status(400).json({
+                success: false,
+                message: "Cannot book past dates"
+            })
+        }
 
         const car = await Car.findById(carId)
+        if (!car) {
+            return res.status(404).json({
+                success: false,
+                message: "Car not found"
+            })
+        }
 
-        if (!car)
-            return res.status(404).json({ success: false, message: "Car not found" })
-
-        if (!car.isAvailable)
-            return res.status(400).json({ success: false, message: "Car unavailable" })
+        if (!car.isAvailable) {
+            return res.status(400).json({
+                success: false,
+                message: "Car unavailable"
+            })
+        }
 
         const conflict = await hasBookingConflict(carId, start, end)
-
-        if (conflict)
+        if (conflict) {
             return res.status(409).json({
                 success: false,
                 message: "Car already booked for selected dates"
             })
+        }
 
         const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24))
         const totalPrice = days * car.pricePerDay
@@ -92,21 +106,38 @@ const createBooking = async (req, res) => {
             owner: car.owner,
             pickupDate: start,
             returnDate: end,
-            totalPrice
+            totalprice: totalPrice
         })
 
-        res.status(201).json({
+        return res.status(201).json({
             success: true,
             message: "Booking created successfully",
             data: booking
         })
     } catch (err) {
         console.error("Create Booking Error:", err)
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "Server error while creating booking"
         })
     }
 }
+const getUserBooking = async (req, res) => {
+    try {
+        // const userId = req.user._id
+        const bookings = await Booking.find({user: req.user._id })
+        if (bookings.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No bookings found"
+            })
+        }
+        return res.status(200).json({ success: true, message: 'User Booking Found Successfully', bookings })
+    } catch (error) {
+        console.error("Error while Fetching User Booking", error)
+        return res.status(500).json({ success: false, message: "Error while Fetching User Booking" })
 
-export { createBooking }
+    }
+}
+
+export { createBooking, CarAvialableONsearch, getUserBooking }

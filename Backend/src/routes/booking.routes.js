@@ -1,13 +1,14 @@
 import { Router } from "express"
-import { createBooking } from "../controllers/booking.controller.js"
+import { CarAvialableONsearch, createBooking,getUserBooking } from "../controllers/booking.controller.js"
 import verifyJWT from "../middleware/auth.middleware.js"
 
 const router = Router()
 
-router.post('/createbooking',verifyJWT,createBooking)
 
+router.post('/car-avialable-search',verifyJWT,CarAvialableONsearch)
+router.post('/createbooking',verifyJWT,createBooking)
+router.get('/getuserbooking',verifyJWT,getUserBooking)
 
 
 
 export default router
-

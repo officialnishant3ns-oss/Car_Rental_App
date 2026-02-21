@@ -16,12 +16,11 @@ const bookingSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
-    pickupdate: {
+    pickupDate: {
         type: Date,
         required: true
     },
-
-    returnupdate: {
+    returnDate: {
         type: Date,
         required: true
     },
