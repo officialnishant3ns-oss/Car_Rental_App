@@ -12,6 +12,44 @@ export const hasBookingConflict = async (carId, start, end) => {
 
     return !!conflict
 }
+const CarAvialableONsearch = async (req, res) => {
+    try {
+        const { location, pickupDate, returnDate } = req.body
+        if (!location || !pickupDate || !returnDate) {
+            res.status(401).json({
+                success: false,
+                message: "All fields required there"
+            })
+        }
+        const cars = await Car.find({ location, isAvailable: true })
+        if (cars.length === 0) {
+            res.status(401).json({
+                success: false,
+                message: "No Car Found"
+            })
+        }
+        const checkedCars = await Promise.all(
+            cars.map(async (car) => {
+                const conflict = await hasBookingConflict(
+                    car._id,
+                    new Date(pickupDate),
+                    new Date(returnDate)
+                )
+
+                return conflict ? null : car;
+            })
+        )
+        const availableCars = checkedCars.filter(car => car && car.isAvailable === true)
+        return res.status(200).json({ success: true, availableCars })
+
+    } catch (err) {
+        console.error("Car Avialability on search Error:", err)
+        res.status(500).json({
+            success: false,
+            message: "Car Avialability on search"
+        })
+    }
+}
 const createBooking = async (req, res) => {
     try {
         const userId = req.user._id
@@ -71,4 +109,4 @@ const createBooking = async (req, res) => {
     }
 }
 
-export {createBooking}
+export { createBooking }
