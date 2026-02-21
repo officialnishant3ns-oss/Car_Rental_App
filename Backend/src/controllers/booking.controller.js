@@ -125,7 +125,7 @@ const createBooking = async (req, res) => {
 const getUserBooking = async (req, res) => {
     try {
         // const userId = req.user._id
-        const bookings = await Booking.find({user: req.user._id })
+        const bookings = (await Booking.find({user: req.user._id }).populate("car").sort({ createdAt: -1 }))
         if (bookings.length === 0) {
             return res.status(404).json({
                 success: false,
@@ -139,5 +139,53 @@ const getUserBooking = async (req, res) => {
 
     }
 }
+const getOwnerBooking = async (req,res)=>{
+    try {
+        if(req.user.role !== 'owner'){
+          return res.status(401).json({ success: false, message: "Error Unauthorised" })    
+        }
 
-export { createBooking, CarAvialableONsearch, getUserBooking }
+          const bookings = await Booking
+            .find({ owner: req.user._id })
+            .populate("car user")
+            .sort({ createdAt: -1 })
+
+        if (!bookings.length) {
+            return res.status(404).json({
+                success: false,
+                message: "No bookings found"
+            })
+        }
+        return res.status(200).json({ success: true, message: 'Owner Booking Found Successfully', bookings })
+
+    } catch (error) {
+        console.error("Error while Fetching User Booking", error)
+        return res.status(500).json({ success: false, message: "Error while Fetching User Booking" })
+  
+    }
+}
+const statusChange = async(req,res)=>{
+    try {
+        const userId =req.user.id
+        const {bookingId,status} =req.body
+        const booking =await Booking.findById(bookingId)
+
+        if(booking.owner.toString()!== userId.toString()){
+             return res.status(401).json({
+            success: false,
+            message: "Unauthorised"
+        }) }
+
+        booking.status =status
+        await booking.save()
+         return res.status(200).json({ success: true, message: 'Status Updated'})
+    } catch (error) {
+         console.error("Error while Fetching changing status", error)
+        return res.status(500).json({
+            success: false,
+            message: "Server error CHanging Status"
+        })
+    }
+}
+
+export { createBooking, CarAvialableONsearch, getUserBooking ,getOwnerBooking,statusChange}
