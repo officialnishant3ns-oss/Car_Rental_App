@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { assets } from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
+import { AppContext } from '../context/AppContext'
 
-const Card = ({ car }) => {
+const Card = ({car}) => {
   const navigate = useNavigate()
+  console.log(car)
 
 
   return (
@@ -18,7 +20,7 @@ const Card = ({ car }) => {
           className="w-full h-58 object-cover transition-transform duration-500 group-hover:scale-105"
         />
 
-        {car.isAvaliable  && (
+        {car.isAvailable  && (
           <p className="absolute top-4 left-4 bg-sky-500 text-white text-xs px-4 py-2 rounded-full">
             Available Now
           </p>

@@ -17,40 +17,35 @@ const AppContextProvider = ({ children }) => {
   const [showLogin, setShowLogin] = useState(false)
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token")
-
-    if (storedToken) {
-      setToken(storedToken)
-      api.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`
-      getUser(storedToken)
-    }
-  }, [])
-
-  useEffect(() => {
-    console.log("Token state:", token)
-    console.log("Stored token:", localStorage.getItem("token"))
-
     if (token) {
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`
-      getUser(token)
+    } else {
+      delete api.defaults.headers.common["Authorization"]
     }
   }, [token])
 
- const getUser = async (authToken) => {
-    try {
-      const { data } = await api.get("/user/getuser", {
-        headers: {
-          Authorization: `Bearer ${authToken || token}`
-        }
-      })
 
-      console.log("User Data:", data)
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token")
+    if (storedToken) setToken(storedToken)
+  }, [])
+
+  useEffect(() => {
+    if (token) getUser()
+  }, [token])
+
+  const getUser = async () => {
+    try {
+      const { data } = await api.get("/user/getuser")
+
       setUser(data)
       localStorage.setItem("user", JSON.stringify(data))
 
+      if (data?.role === "owner") setIsOwner(true)
+
     } catch (error) {
-       toast.error("Session expired. Please login again",error)
       console.log("GetUser Error:", error)
+      toast.error("Session expired. Please login again")
       logout()
     }
   }
@@ -62,51 +57,55 @@ const AppContextProvider = ({ children }) => {
     localStorage.removeItem("token")
     localStorage.removeItem("user")
 
-    delete api.defaults.headers.common["Authorization"]
-
     toast.info("Logged out successfully")
   }
+
   const getCars = async () => {
     try {
       const { data } = await api.get("/car/getallcar")
-      console.log("Cars:", data)
-      setCar(data)
+
+      if (data?.status) {
+        setCar(data.data) 
+      } else {
+        setCar([])
+      }
+
     } catch (error) {
       console.log("Cars Error:", error)
-      toast.error("Failed to fetch cars",error)
+      toast.error("Failed to fetch cars")
     }
   }
   useEffect(() => {
     getCars()
   }, [])
 
-const changeRole = async () => {
-  try {
-    const { data } = await api.patch(
-      "/user/change-role",
-      {}, 
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
+  const changeRole = async () => {
+    try {
+      const { data } = await api.patch(
+        "/user/change-role",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
-      }
-    );
-  //  console.log(data)
-   setIsOwner(true)
-    if (data?.success) {
-      toast.success(data.message)
-    } else {
-      toast.error(data?.message || "Role update failed")
-    }
+      );
 
-  } catch (error) {
-    toast.error(
-      error.response?.data?.message ||
-      error.message ||
-      "Something went wrong"
-    )
+      setIsOwner(true)
+      if (data?.success) {
+        toast.success(data.message)
+      } else {
+        toast.error(data?.message || "Role update failed")
+      }
+
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong"
+      )
+    }
   }
-}
 
 
 
@@ -124,7 +123,8 @@ const changeRole = async () => {
         showLogin,
         setShowLogin,
         api,
-        changeRole
+        changeRole,
+        getCars
       }}
     >
       {children}

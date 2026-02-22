@@ -41,7 +41,12 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(user))
       
       setShowLogin(false)
-      toast.success("Login successful")
+      if(mode === 'login'){
+        toast.success("Login successful")
+      }else{
+         toast.success("Register successful")
+      }
+      
 
     } catch (err) {
       toast.error( err.response?.data?.message ||

@@ -40,19 +40,19 @@ const ManageBooking = () => {
                         <td className='p-3 '>{booking.pickupDate.split('T')[0]} to {booking.returnDate.split('T')[0]} </td>
                          <td className='p-3'>$ {booking.price} </td>
                          <td className='p-3 '>
-                          <span className='bg-gray-200 rounded-full p-1'>
+                          <span className='bg-gray-200 rounded p-2'>
                             offline
                           </span>
                           </td>
                           <td className='p-3'>
                         {booking.status=== 'pending' ?(
-                          <select>
+                          <select className='border-2 border-gray-500 rounded p-1.5'>
                             <option value="PENDING">PENDING</option>
                             <option value="CANCELED">CANCELED</option>
                             <option value="CONFIRMED">CONFIRMED</option>
                           </select>
                         ):(
-                          <span className={`p-2 rounded-full text-sm font-semibold ${booking.status === 'confirmed' ? 'bg-green-100 text-green-500': 'bg-red-100 text-red-500'}`}>
+                          <span className={`rounded p-2.5 text-sm font-semibold ${booking.status === 'confirmed' ? 'bg-green-100 text-green-500': 'bg-red-100 text-red-500'}`}>
                             {booking.status}
                           </span>
                         )}

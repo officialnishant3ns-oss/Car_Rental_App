@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Title from './Title'
 import { assets, dummyCarData } from '../assets/assets'
 import Card from './Card'
 import { useNavigate } from 'react-router-dom'
+import { AppContext } from '../context/AppContext'
 
 const Featured = () => {
+    const {car} = useContext(AppContext)
+    console.log(car)
     const navigate = useNavigate()
     return (
         <div className='flex flex-col items-center py-24 px-6 bg-gray-200'>
@@ -15,7 +18,7 @@ const Featured = () => {
             </div>
             <div className='grid grid-cols-3 gap-8 mt-18'>
                 {
-                    dummyCarData.slice(0, 6).map((car) => (
+                    car.slice(0, 6).map((car) => (
                         <div key={car._id}>
                             <Card car={car} />
                         </div>

@@ -7,19 +7,16 @@ import { AppContext } from '../context/AppContext'
 const Cardetails = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  // const [car, setCar] = useState(null)
-    const {car,setCar} = useContext(AppContext)
-     
+ const {car,setCar} = useContext(AppContext)
+     console.log('cardetail',car)
 
   
  const submitHandler = async(e) => {
     e.preventDefault()
-
-    
   }
 
   useEffect(() => {
-    setCar(dummyCarData.find((car) => car._id === id))
+    setCar(car.find((car) => car._id === id))
   }, [id])
 
 
