@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Titleowner from '../../components/owner/Titleowner'
 import { assets, dummyDashboardData } from '../../assets/assets'
+import { AppContext } from '../../context/AppContext'
+import { toast } from 'react-toastify'
 
 const Dashboard = () => {
-  const data = dummyDashboardData
-  const [Data, setData] = useState({
+  const {token,api,isOwner} = useContext(AppContext)
+  const [data, setData] = useState({
     totalCars: 0,
     totalBookings: 0,
     pendingBookings: 0,
@@ -12,8 +14,28 @@ const Dashboard = () => {
     recentBookings: [],
     monthlyRevenue: 0
   })
+    const fecthBookingData = async()=>{
+      try {
+        const {data} =await api.get('/car/dashboard' ) 
+        console.log(data)
+        if(data.success){
+          setData(data.dashboardData)
+        }
+        else{
+            toast.error(data?.message || "Fetch booking failed")
+        }
+      } catch (error) {
+         toast.error(
+          error.response?.data?.message ||
+          error.message ||
+          "Something went wrong"
+        )
+      }
+    }
   useEffect(() => {
-    setData(dummyDashboardData)
+   if(isOwner){
+    fecthBookingData()
+   }
   }, []
   )
 
@@ -62,7 +84,7 @@ const Dashboard = () => {
         <div className="bg-white shadow-lg rounded-xl py-7 px-10 gap-5 flex items-center justify-center">
           <div>
             <p className="text-gray-600">Complete Booking</p>
-            <p className="text-2xl text-center font-bold">{data.completedBookings}</p>
+            <p className="text-2xl text-center font-bold">{data.completeBookings}</p>
           </div>
           <img
             src={assets.listIconColored}

@@ -6,7 +6,7 @@ import { AppContext } from '../../context/AppContext'
 
 const Layout = () => {
   const navigate = useNavigate()
-  const { user, isOwner, naviga } = useContext(AppContext)
+  const { user, isOwner } = useContext(AppContext)
 
   useEffect(() => {
     if (!isOwner) {
@@ -22,7 +22,6 @@ const Layout = () => {
         <div >
           <Outlet />
         </div>
-
       </div>
     </div>
   )

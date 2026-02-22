@@ -19,6 +19,7 @@ const AppContextProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`
+      getUser()
     } else {
       delete api.defaults.headers.common["Authorization"]
     }
@@ -29,10 +30,6 @@ const AppContextProvider = ({ children }) => {
     const storedToken = localStorage.getItem("token")
     if (storedToken) setToken(storedToken)
   }, [])
-
-  useEffect(() => {
-    if (token) getUser()
-  }, [token])
 
   const getUser = async () => {
     try {
@@ -83,21 +80,14 @@ const AppContextProvider = ({ children }) => {
     try {
       const { data } = await api.patch(
         "/user/change-role",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
+        {}
+      )
       setIsOwner(true)
       if (data?.success) {
         toast.success(data.message)
       } else {
         toast.error(data?.message || "Role update failed")
       }
-
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
@@ -106,6 +96,7 @@ const AppContextProvider = ({ children }) => {
       )
     }
   }
+  
 
 
 
