@@ -32,7 +32,7 @@ const ManageCar = () => {
           <tbody className=''>
             {car.map((car, index) => (
               <tr key={index} className='border-t border-amber-800 '>
-                <td className='p-3 flex items-center gap-3'>
+                <td className='p-3 flex items-center gap-5'>
                   <img src={car.image} className='h-12 w-12 aspect-square rounded-md object-cover' alt="" />
                   <div >
                     <p className='font-medium'>{car.brand} {car.model} </p>
