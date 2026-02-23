@@ -30,17 +30,27 @@ const ManageCar = () => {
       )
     }
   }
- const deleteCar = async()=>{
+const deleteCar = async (carId) => {
   try {
-    const {data} = await api.post('/car/delete-car',{
-    
-    },{
-          headers: { Authorization: `Bearer ${token}` }
-        })
+    const { data } = await api.delete(
+      `/car/deletecar/${carId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+
+    if (data.success) {
+      toast.success("Car deleted successfully")
+      setCar(prev => prev.filter(c => c._id !== carId))
+    } else {
+      toast.error(data.message)
+    }
   } catch (error) {
-    
+    toast.error(
+      error.response?.data?.message ||
+      error.message ||
+      "Something went wrong"
+    )
   }
- }
+}
   useEffect(() => {
     if (token) {
       fetchOwnerCar()
@@ -81,8 +91,8 @@ const ManageCar = () => {
                 <td className="p-3">
                   <span
                     className={`px-3 py-2 rounded-full text-xs ${car.isAvailable
-                        ? "bg-green-100 text-green-500"
-                        : "bg-red-100 text-red-500"
+                      ? "bg-green-100 text-green-500"
+                      : "bg-red-100 text-red-500"
                       }`}
                   >
                     {car.isAvailable ? "Available" : "Unavailable"}
@@ -91,8 +101,8 @@ const ManageCar = () => {
                 <td className='flex items-center p-3'>
                   <img className='cursor-pointer' src={car.isAvaliable ? assets.eye_close_icon : assets.eye_icon} alt="" />
                   <img
-                  //  onClick={deleteCar}
-                  className='cursor-pointer' src={assets.delete_icon} alt="" />
+                    onClick={() => deleteCar(car._id)}
+                    className='cursor-pointer' src={assets.delete_icon} alt="" />
                 </td>
               </tr>
 

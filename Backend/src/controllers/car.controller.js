@@ -139,6 +139,12 @@ const toggleAvailability = async (req, res) => {
 const deleteCar_Null = async (req, res) => {
     try {
         const { carId } = req.body
+        if (!carId) {
+            return res.status(404).json({
+                success: false,
+                message: "CarID not found"
+            })
+        }
    const userId = req.user._id
         const car = await Car.findById(carId)
         if (!car) {
@@ -169,7 +175,6 @@ const deleteCar_Null = async (req, res) => {
         })
     }
 }
-
 //for update car there
 const updateCar = async (req, res) => {
     try {
