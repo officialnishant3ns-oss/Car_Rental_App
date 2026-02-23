@@ -1,16 +1,52 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { assets, dummyCarData } from '../../assets/assets'
 import Titleowner from '../../components/owner/Titleowner'
+import { AppContext } from '../../context/AppContext'
+import { toast } from 'react-toastify'
 
 const ManageCar = () => {
+
+  const { isOwner, token, api } = useContext(AppContext)
   const [car, setCar] = useState([])
+
   const fetchOwnerCar = async () => {
-    setCar(dummyCarData)
+    try {
+      const { data } = await api.get('/car/getownercar',
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      // console.log("fetch owner car that they made for sale",data.data)
+      if (data.success) {
+        setCar(data.data)
+      }
+      else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong"
+      )
+    }
   }
+ const deleteCar = async()=>{
+  try {
+    const {data} = await api.post('/car/delete-car',{
+    
+    },{
+          headers: { Authorization: `Bearer ${token}` }
+        })
+  } catch (error) {
+    
+  }
+ }
   useEffect(() => {
-    fetchOwnerCar()
-  }, []
-  )
+    if (token) {
+      fetchOwnerCar()
+    }
+  }, [])
+
   return (
     <div className='p-8 w-full'>
       <Titleowner
@@ -41,18 +77,23 @@ const ManageCar = () => {
                 </td>
                 <td>{car.category} </td>
                 <td>$ {car.pricePerDay} /day </td>
-          
-          <td className='p-3'>
-           <span className={`px-3 py-2 rounded-full text-xs ${
-            car.isAvaliable ? 'bg-green-100 text-green-500'  :'bg-red-100 text-red-500'
-           }`}>
-            {car.isAvaliable ? 'Available' : 'Unavialable'}
-           </span>
-          </td>
-               <td className='flex items-center p-3'>
-            <img className='cursor-pointer' src={car.isAvaliable ? assets.eye_close_icon : assets.eye_icon} alt="" />
-             <img className='cursor-pointer' src={assets.delete_icon} alt="" />
-               </td>
+
+                <td className="p-3">
+                  <span
+                    className={`px-3 py-2 rounded-full text-xs ${car.isAvailable
+                        ? "bg-green-100 text-green-500"
+                        : "bg-red-100 text-red-500"
+                      }`}
+                  >
+                    {car.isAvailable ? "Available" : "Unavailable"}
+                  </span>
+                </td>
+                <td className='flex items-center p-3'>
+                  <img className='cursor-pointer' src={car.isAvaliable ? assets.eye_close_icon : assets.eye_icon} alt="" />
+                  <img
+                  //  onClick={deleteCar}
+                  className='cursor-pointer' src={assets.delete_icon} alt="" />
+                </td>
               </tr>
 
             ))}

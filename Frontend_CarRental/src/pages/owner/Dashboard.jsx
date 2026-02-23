@@ -17,7 +17,7 @@ const Dashboard = () => {
     const fecthBookingData = async()=>{
       try {
         const {data} =await api.get('/car/dashboard' ) 
-        console.log(data)
+        // console.log(data)
         if(data.success){
           setData(data.dashboardData)
         }

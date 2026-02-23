@@ -72,23 +72,32 @@ const AddCar = async (req, res) => {
     }
 }
 const getOwnerCar = async (req, res) => {
-    try {
-        const { _id } = req.user.id
-        const car = await Car.find({ owner: _id })
-        if (!car) {
-            return res.status(400).json({ success: false, message: "No cars found for this owner" })
-        }
-        return res.status(200).json({
-            success: true,
-            count: car.length,
-            car
-        })
+  try {
+    const ownerId = req.user._id   
 
-    } catch (error) {
-        console.error("Register Error::", error)
-        return res.status(500).json({ message: "Something went wrong while getting car data " })
+    const cars = await Car.find({ owner: ownerId })
 
+    if (!cars.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No cars found for this owner"
+      })
     }
+
+    return res.status(200).json({
+      success: true,
+      count: cars.length,
+      data: cars
+    })
+
+  } catch (error) {
+    console.error("GetOwnerCar Error:", error)
+
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while fetching cars"
+    })
+  }
 }
 const toggleAvailability = async (req, res) => {
     try {
@@ -130,7 +139,7 @@ const toggleAvailability = async (req, res) => {
 const deleteCar_Null = async (req, res) => {
     try {
         const { carId } = req.body
-
+   const userId = req.user._id
         const car = await Car.findById(carId)
         if (!car) {
             return res.status(404).json({
@@ -146,10 +155,10 @@ const deleteCar_Null = async (req, res) => {
         }
         car.owner = null
         car.isAvailable = false
-        car.save()
+      await  car.save()
         res.json({
             success: true,
-            message: "Car Deleted"
+            message: "Car deleted successfully"
         })
 
     } catch (error) {
