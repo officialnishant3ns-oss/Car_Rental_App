@@ -284,7 +284,6 @@ const getCarSearch = async (req, res) => {
 
     }
 }
-
 const getDashboardData = async (req, res) => {
     try {
         const { _id, role } = req.user

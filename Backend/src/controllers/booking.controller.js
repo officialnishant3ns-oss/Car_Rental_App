@@ -125,7 +125,7 @@ const createBooking = async (req, res) => {
 const getUserBooking = async (req, res) => {
     try {
         // const userId = req.user._id
-        const bookings = (await Booking.find({user: req.user._id }).populate("car").sort({ createdAt: -1 }))
+        const bookings = (await Booking.find({ user: req.user._id }).populate("car").sort({ createdAt: -1 }))
         if (bookings.length === 0) {
             return res.status(404).json({
                 success: false,
@@ -139,15 +139,16 @@ const getUserBooking = async (req, res) => {
 
     }
 }
-const getOwnerBooking = async (req,res)=>{
+const getOwnerBooking = async (req, res) => {
     try {
-        if(req.user.role !== 'owner'){
-          return res.status(401).json({ success: false, message: "Error Unauthorised" })    
+        if (req.user.role !== 'owner') {
+            return res.status(401).json({ success: false, message: "Error Unauthorised" })
         }
 
-          const bookings = await Booking
+        const bookings = await Booking
             .find({ owner: req.user._id })
-            .populate("car user")
+            .populate("car")
+            .populate("user", "name email phone")
             .sort({ createdAt: -1 })
 
         if (!bookings.length) {
@@ -161,26 +162,27 @@ const getOwnerBooking = async (req,res)=>{
     } catch (error) {
         console.error("Error while Fetching User Booking", error)
         return res.status(500).json({ success: false, message: "Error while Fetching User Booking" })
-  
+
     }
 }
-const statusChange = async(req,res)=>{
+const statusChange = async (req, res) => {
     try {
-        const userId =req.user.id
-        const {bookingId,status} =req.body
-        const booking =await Booking.findById(bookingId)
+        const userId = req.user.id
+        const { bookingId, status } = req.body
+        const booking = await Booking.findById(bookingId)
 
-        if(booking.owner.toString()!== userId.toString()){
-             return res.status(401).json({
-            success: false,
-            message: "Unauthorised"
-        }) }
+        if (booking.owner.toString() !== userId.toString()) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorised"
+            })
+        }
 
-        booking.status =status
+        booking.status = status
         await booking.save()
-         return res.status(200).json({ success: true, message: 'Status Updated'})
+        return res.status(200).json({ success: true, message: 'Status Updated' })
     } catch (error) {
-         console.error("Error while Fetching changing status", error)
+        console.error("Error while Fetching changing status", error)
         return res.status(500).json({
             success: false,
             message: "Server error CHanging Status"
@@ -188,4 +190,4 @@ const statusChange = async(req,res)=>{
     }
 }
 
-export { createBooking, CarAvialableONsearch, getUserBooking ,getOwnerBooking,statusChange}
+export { createBooking, CarAvialableONsearch, getUserBooking, getOwnerBooking, statusChange }

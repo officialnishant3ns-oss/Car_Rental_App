@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { dummyMyBookingsData } from '../../assets/assets'
 import Titleowner from '../../components/owner/Titleowner'
 import { AppContext } from '../../context/AppContext'
+import { toast } from 'react-toastify'
 
 const ManageBooking = () => {
 
@@ -10,12 +10,12 @@ const ManageBooking = () => {
 
   const fetchBookingData = async () => {
     try {
-      const { data } = await api.get('/car/dashboard', {
+      const { data } = await api.get('/booking/getownerbooking', {
         headers: { Authorization: `Bearer ${token}` }
       })
-      console.log(data)
+      console.log('booking data owner', data)
       if (data.success) {
-        setBooking(data.dashboardData)
+        setBooking(data.bookings)
       }
       else {
         toast.error(data?.message || "Fetch booking failed")
@@ -28,15 +28,19 @@ const ManageBooking = () => {
       )
     }
   }
-  const changeStatus = async () => {
+  const changeStatus = async (bookingId, status) => {
     try {
-
-      if (condition) {
-
+      const { data } = await api.post('/booking/changebookingstatus',
+        {
+          bookingId,
+          status
+        })
+      if (data.success) {
+        toast.success("Status Changed Successfully")
+        setBooking(prev =>  prev.map(b => b._id === bookingId ? { ...b, status } : b))
       } else {
         toast.error(data?.message || "Fetch booking failed")
       }
-
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
@@ -77,14 +81,14 @@ const ManageBooking = () => {
                     <p>{item.car.brand} {item.car.model} </p>
                   </td>
                   <td className='p-3 '>{item.pickupDate.split('T')[0]} to {item.returnDate.split('T')[0]} </td>
-                  <td className='p-3'>$ {item.price} </td>
+                  <td className='p-3'>$ {item.totalprice} </td>
                   <td className='p-3 '>
                     <span className='bg-gray-200 rounded p-2'>
                       offline
                     </span>
                   </td>
                   <td className='p-3'>
-                    {item.status === 'pending' ? (
+                    {item.status === 'PENDING' ? (
                       <select
                         onChange={(e) => changeStatus(item._id, e.target.value)}
                         className='border-2 border-gray-500 rounded p-1.5'>
@@ -93,7 +97,7 @@ const ManageBooking = () => {
                         <option value="CONFIRMED">CONFIRMED</option>
                       </select>
                     ) : (
-                      <span className={`rounded p-2.5 text-sm font-semibold ${item.status === 'confirmed' ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-500'}`}>
+                      <span className={`rounded p-2.5 text-sm font-semibold ${item.status === 'CONFIRMED' ? 'bg-green-100 text-green-500' : 'bg-red-100 text-red-500'}`}>
                         {item.status}
                       </span>
                     )}
