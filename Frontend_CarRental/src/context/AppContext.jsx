@@ -56,13 +56,12 @@ const AppContextProvider = ({ children }) => {
 
     toast.info("Logged out successfully")
   }
-
   const getCars = async () => {
     try {
       const { data } = await api.get("/car/getallcar")
-
-      if (data?.status) {
-        setCar(data.data) 
+      console.log('car', data.data)
+      if (data.status) {
+        setCar(data.data)
       } else {
         setCar([])
       }
@@ -72,6 +71,7 @@ const AppContextProvider = ({ children }) => {
       toast.error("Failed to fetch cars")
     }
   }
+  
   useEffect(() => {
     getCars()
   }, [])
@@ -96,7 +96,7 @@ const AppContextProvider = ({ children }) => {
       )
     }
   }
-  
+
 
 
 
@@ -115,7 +115,6 @@ const AppContextProvider = ({ children }) => {
         setShowLogin,
         api,
         changeRole,
-        getCars
       }}
     >
       {children}

@@ -3,23 +3,61 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { assets, dummyCarData } from '../assets/assets'
 import Loader from '../components/Loader'
 import { AppContext } from '../context/AppContext'
+import { toast } from 'react-toastify'
 
 const Cardetails = () => {
+  const { car, api } = useContext(AppContext)
   const { id } = useParams()
-  const navigate = useNavigate()
- const {car,setCar} = useContext(AppContext)
-     console.log('cardetail',car)
+  const [pickupDate, setPickupDate] = useState('')
+  const [returnDate, setReturnDate] = useState('')
+  const [CAr, setCAr] = useState(null)
+  const [Loading, setLoading] = useState(false)
 
-  
- const submitHandler = async(e) => {
+    useEffect(() => {
+    if (car?.length) {
+      const foundCar = car.find(c => c._id === id)
+      setCAr(foundCar || null)
+    }
+  }, [id, car])
+
+  const navigate = useNavigate()
+
+  console.log('cardetail', car)
+  console.log('CAr', CAr)
+
+
+  const BookingCar = async (e) => {
     e.preventDefault()
+   
+
+     if (returnDate < pickupDate)
+      return toast.error("Return date must be after pickup date")
+    try {
+       setLoading(true)
+      const { data } = await api.post('/booking/createbooking',
+        {
+          carId: id,
+          pickupDate,
+          returnDate
+        })
+      if (data.success) {
+        toast.success("Booking Created SuccessFully")
+
+        setPickupDate('')
+        setReturnDate('')
+      }
+      else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  useEffect(() => {
-    setCar(car.find((car) => car._id === id))
-  }, [id])
 
-
+  if (!CAr) return <Loader />
   return car ? (
     <div className='px-6 mt-15'>
       <button
@@ -32,19 +70,19 @@ const Cardetails = () => {
 
 
       <div className='grid grid-cols-3 gap-12 pl-13 pr-13'>
-  
+
         <div className='col-span-2 mb-25 '>
-          <img src={car.image} alt="" className='w-full object-cover mb-6 h-120 rounded-2xl' />
-          <div>    <h1 className='text-4xl font-semibold mb-3'>{car.brand}   {car.model}</h1>
-            <p className='text-lg  font-serif'>{car.year}  {car.category}</p>
+          <img src={CAr.image} alt="" className='w-full object-cover mb-6 h-120 rounded-2xl' />
+          <div>    <h1 className='text-4xl font-semibold mb-3'>{CAr.brand}   {CAr.model}</h1>
+            <p className='text-lg  font-serif'>{CAr.year}  {CAr.category}</p>
           </div>
           <hr />
           <div className="grid grid-cols-4 gap-4 mt-6">
             {[
-              { icon: assets.users_icon, text: `${car.seating_capacity} Seats` },
-              { icon: assets.fuel_icon, text: car.fuel_type },
-              { icon: assets.location_icon, text: car.location },
-              { icon: assets.carIcon, text: car.transmission }
+              { icon: assets.users_icon, text: `${CAr.seating_capacity} Seats` },
+              { icon: assets.fuel_icon, text: CAr.fuel_type },
+              { icon: assets.location_icon, text: CAr.location },
+              { icon: assets.carIcon, text: CAr.transmission }
             ].map(({ icon, text }, index) => (
               <div
                 key={index}
@@ -57,7 +95,7 @@ const Cardetails = () => {
           </div>
           <div className='mb-5 mt-6'>
             <h1 className='text-2xl font-normal'>Description</h1>
-            <p className='text-gray-500 '>{car.description}</p>
+            <p className='text-gray-500 '>{CAr.description}</p>
 
           </div>
           <div className='mt-1'>
@@ -76,13 +114,13 @@ const Cardetails = () => {
         </div>
 
 
-      
+
         <div>
           <form
-          onSubmit={submitHandler}
-          action="" className='shadow-lg h-max sticky top-18 rounded-xl p-6 space-y-6 text-gray-500'>
+            onSubmit={BookingCar}
+            action="" className='shadow-lg h-max sticky top-18 rounded-xl p-6 space-y-6 text-gray-500'>
             <div className='flex justify-between items-center'>
-              <p className='font-bold text-black text-2xl'>$ {car.pricePerDay}</p>
+              <p className='font-bold text-black text-2xl'>$ {CAr.pricePerDay}</p>
               <span> Per Day</span>
             </div>
             <hr className="border-borderColor my-6" />
@@ -91,6 +129,8 @@ const Cardetails = () => {
               <input
                 type="date"
                 id='pickup-date'
+                value={pickupDate}
+                onChange={(e) => setPickupDate(e.target.value)}
                 min={new Date().toISOString().split('T')[0]}
                 className="border  border-borderColor px-3 py-2 w-90 rounded-lg text-gray-600  mt-3 outline-none cursor-pointer"
                 required
@@ -100,6 +140,8 @@ const Cardetails = () => {
             <div className="flex flex-col items-start">
               <label htmlFor="return-date">Return Date</label>
               <input
+                value={returnDate}
+                onChange={(e) => setReturnDate(e.target.value)}
                 type="date"
                 id='return-date'
                 min={new Date().toISOString().split('T')[0]}
@@ -108,14 +150,18 @@ const Cardetails = () => {
 
               />
             </div>
-            <button className='w-full bg-blue-500 hover:bg-primary-dull transition-all py-3 font-medium text-white rounded-xl cursor-pointer'>Book Now</button>
+            <button className='w-full bg-blue-500 hover:bg-primary-dull transition-all py-3 font-medium text-white rounded-xl cursor-pointer'
+              disabled={Loading}
+            >
+                      {Loading ? "Processing..." : "Book Now"}
+                      </button>
 
 
           </form>
         </div>
       </div>
     </div>
-  ) : <Loader/>
+  ) : <Loader />
 }
 
 export default Cardetails
