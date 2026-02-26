@@ -190,4 +190,31 @@ const statusChange = async (req, res) => {
     }
 }
 
-export { createBooking, CarAvialableONsearch, getUserBooking, getOwnerBooking, statusChange }
+ const deleteBooking = async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const booking = await Booking.findById(id)
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found"
+      })
+    }
+
+    await Booking.findByIdAndDelete(id);
+
+    res.status(200).json({
+      success: true,
+      message: "Booking deleted successfully"
+    })
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    })
+  }
+}
+export { createBooking, CarAvialableONsearch, getUserBooking, getOwnerBooking, statusChange,deleteBooking }

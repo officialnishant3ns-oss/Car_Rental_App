@@ -17,7 +17,7 @@ const Dashboard = () => {
     const fecthBookingData = async()=>{
       try {
         const {data} =await api.get('/car/dashboard' ) 
-        // console.log(data)
+        console.log(data)
         if(data.success){
           setData(data.dashboardData)
         }
@@ -99,7 +99,7 @@ const Dashboard = () => {
           <h1 className='text-xl font-medium'>Recent Booking</h1>
           <h1 className='text-gray-600 font-normal'>Latest Customer Bookings </h1>
           {
-            data.recentBookings.map((booking, index) => (
+            data.recentBookings?.filter(b => b.car).map((booking, index) => (
               <div key={index} className='mt-4 flex items-center gap-8 justify-between'>
                 <div className='flex items-center gap-2'>
                   <div className='flex items-center justify-center w-13 h-13 rounded-full'>
