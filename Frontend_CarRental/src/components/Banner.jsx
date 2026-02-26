@@ -17,9 +17,7 @@ const Banner = () => {
             and reach thousands of verified renters looking for luxury rides.
           </p>
 
-          <button className="mt-8 px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl hover:bg-amber-100 transition duration-300">
-            List your car //navigate portion there
-          </button>
+          <p className="text-yellow-500 text-xl pt-4">Go to List Car</p>
         </div>
 
         <div className="flex-shrink-0">

@@ -9,7 +9,7 @@ const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const { user, logout, showLogin, setShowLogin, isOwner, setIsOwner, changeRole } = useContext(AppContext)
-  console.log(isOwner)
+  // console.log(isOwner)
   const navigate = useNavigate()
 
 

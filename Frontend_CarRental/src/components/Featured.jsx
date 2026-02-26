@@ -7,11 +7,10 @@ import { AppContext } from '../context/AppContext'
 
 const Featured = () => {
     const {car,api} = useContext(AppContext)
-    console.log("car contex",car) // null value coming there
+    // console.log("car contex",car) // null value coming there
     const navigate = useNavigate()
     return (
-        <div className='flex flex-col items-center py-24 px-6 bg-gray-200'>
-
+        <div className='flex flex-col items-center py-24 px-16 bg-gray-200'>
 
             <div>
                 <Title title={'Featured vehicles'} subtitle={'Explore our selction of premium vehicles for you next adventure'} />

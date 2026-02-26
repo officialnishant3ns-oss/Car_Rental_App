@@ -17,7 +17,7 @@ const Booking = () => {
         headers: { Authorization: `Bearer ${token}` }
       }
       )
-       console.log("booking data" , data)
+      //  console.log("booking data" , data)
       if (data.success) {
         setBooking(data.bookings || [])
       } else {

@@ -59,7 +59,7 @@ const AppContextProvider = ({ children }) => {
   const getCars = async () => {
     try {
       const { data } = await api.get("/car/getallcar")
-      console.log('car', data.data)
+      // console.log('car', data.data)
       if (data.success) {
         setCar(data.data)
       } else {

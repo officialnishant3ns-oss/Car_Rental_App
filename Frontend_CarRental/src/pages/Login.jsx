@@ -32,7 +32,7 @@ const Login = () => {
 
       const token = res.data.Token
       const user = res.data.user
-      console.log(res.data)
+      // console.log(res.data)
       setToken(token)
       setUser(user)
       navigate('/')

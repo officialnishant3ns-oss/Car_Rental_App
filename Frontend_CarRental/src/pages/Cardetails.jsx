@@ -22,8 +22,8 @@ const Cardetails = () => {
 
   const navigate = useNavigate()
 
-  console.log('cardetail', car)
-  console.log('CAr', CAr)
+  // console.log('cardetail', car)
+  // console.log('CAr', CAr)
 
 
   const BookingCar = async (e) => {

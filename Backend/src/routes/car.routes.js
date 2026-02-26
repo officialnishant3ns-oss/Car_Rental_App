@@ -11,7 +11,7 @@ router.delete('/deletecar/:id',verifyJWT,deleteCar)
 router.get('/getcar/:id',getCarByid)
 router.get('/getallcar',getCarSearch)  // currently not using this
 router.get('/getownercar',verifyJWT,getOwnerCar)
-router.get('/getsearchcar',verifyJWT,getAllCar_M2) // in working there
+router.get('/getsearchcar',getAllCar_M2) // in working there
 router.post('/toggleavailablity',verifyJWT,toggleAvailability)
 router.post('/delete-car',verifyJWT,deleteCar_Null)
 router.get('/dashboard',verifyJWT,getDashboardData)

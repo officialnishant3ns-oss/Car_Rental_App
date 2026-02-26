@@ -5,7 +5,7 @@ import { AppContext } from '../context/AppContext'
 
 const Card = ({car}) => {
   const navigate = useNavigate()
-  console.log(car)
+  // console.log(car)
 
 
   return (
