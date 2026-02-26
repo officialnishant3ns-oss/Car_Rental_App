@@ -4,20 +4,26 @@ import { AppContext } from '../context/AppContext'
 import { toast } from 'react-toastify'
 import Loader from './Loader'
 
-const AllCarsection = ({ search }) => {
+const AllCarsection = ({ search,setSearch }) => {
 
   const { api } = useContext(AppContext)
 
   const [carSearch, setCarSearch] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const searchFilter = async () => {
+    setLoading(true)
     try {
-      setLoading(true)
-      const { data } = await api.get(`/car/getallcar?search=${search}`)
-        console.log("search data",data.data)
+        const url = search.trim()
+        ? `/car/getsearchcar?search=${encodeURIComponent(search)}`
+        : `/car/getsearchcar`
+
+      const { data } = await api.get(url)
+
+      // console.log("search data", data.cars)
       if (data.success) {
-        setCarSearch(data.data)
+        setCarSearch(data.cars)
+      
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Search failed")

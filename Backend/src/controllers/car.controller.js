@@ -241,6 +241,37 @@ const getCarByid = async (req, res) => {
 
     }
 }
+const getDashboardData = async (req, res) => {
+    try {
+        const { _id, role } = req.user
+        if (role !== 'owner') {
+            return res.status(401).json({ message: "Unathorised access" })
+        }
+        const cars = await Car.find({ owner: _id })
+        const bookings = await Booking.find({ owner: _id }).populate('car').sort({ createdAt: -1 })
+
+        const pendingData = await Booking.find({ owner: _id, status: 'PENDING' })
+        const confirmData = await Booking.find({ owner: _id, status: 'CONFIRMED' })
+
+        const monthlyRevenue = bookings
+            .filter(booking => booking.status === "CONFIRMED")
+            .reduce((acc, booking) => acc + booking.totalprice, 0)
+
+        const dashboardData = {
+            totalCars: cars.length,
+            totalBookings: bookings.length,
+            pendingBookings: pendingData.length,
+            completeBookings: confirmData.length,
+            recentBookings: bookings.slice(0, 3),
+            monthlyRevenue
+        }
+        return res.status(200).json({ success: true, dashboardData })
+    } catch (error) {
+        console.error("Message Error ", error)
+        return res.status(500).json({ message: "Something went wrong while get carDetail Dashboard Data" })
+
+    }
+}
 //search filter there
 const getCarSearch = async (req, res) => {
   try {
@@ -301,46 +332,13 @@ const getCarSearch = async (req, res) => {
     })
   }
 }
-const getDashboardData = async (req, res) => {
-    try {
-        const { _id, role } = req.user
-        if (role !== 'owner') {
-            return res.status(401).json({ message: "Unathorised access" })
-        }
-        const cars = await Car.find({ owner: _id })
-        const bookings = await Booking.find({ owner: _id }).populate('car').sort({ createdAt: -1 })
-
-        const pendingData = await Booking.find({ owner: _id, status: 'PENDING' })
-        const confirmData = await Booking.find({ owner: _id, status: 'CONFIRMED' })
-
-        const monthlyRevenue = bookings
-            .filter(booking => booking.status === "CONFIRMED")
-            .reduce((acc, booking) => acc + booking.totalprice, 0)
-
-        const dashboardData = {
-            totalCars: cars.length,
-            totalBookings: bookings.length,
-            pendingBookings: pendingData.length,
-            completeBookings: confirmData.length,
-            recentBookings: bookings.slice(0, 3),
-            monthlyRevenue
-        }
-        return res.status(200).json({ success: true, dashboardData })
-    } catch (error) {
-        console.error("Message Error ", error)
-        return res.status(500).json({ message: "Something went wrong while get carDetail Dashboard Data" })
-
-    }
-}
-//m_2
+//m_2 For Search from Direct Input
 const getAllCar_M2 = async (req, res) => {
 
   try {
-
     const { search } = req.query
-
     let filter = {}
-
+    
     if (search) {
       filter = {
         $or: [
@@ -365,4 +363,4 @@ const getAllCar_M2 = async (req, res) => {
     })
   }
 }
-export { AddCar, updateCar, deleteCar, getCarByid, getCarSearch, getOwnerCar, toggleAvailability, deleteCar_Null,getDashboardData }
+export { AddCar, updateCar, deleteCar, getCarByid, getCarSearch, getOwnerCar, toggleAvailability, deleteCar_Null,getDashboardData,getAllCar_M2 }

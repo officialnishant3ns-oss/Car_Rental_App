@@ -13,7 +13,7 @@ const Cardetails = () => {
   const [CAr, setCAr] = useState(null)
   const [Loading, setLoading] = useState(false)
 
-    useEffect(() => {
+  useEffect(() => {
     if (car?.length) {
       const foundCar = car.find(c => c._id === id)
       setCAr(foundCar || null)
@@ -28,12 +28,13 @@ const Cardetails = () => {
 
   const BookingCar = async (e) => {
     e.preventDefault()
-   
 
-     if (returnDate < pickupDate)
+
+    if (returnDate <= pickupDate)
       return toast.error("Return date must be after pickup date")
+
     try {
-       setLoading(true)
+      setLoading(true)
       const { data } = await api.post('/booking/createbooking',
         {
           carId: id,
@@ -50,7 +51,13 @@ const Cardetails = () => {
         toast.error(data.message)
       }
     } catch (error) {
-      toast.error(error.message)
+      const msg =
+        error?.response?.data?.message ||
+        error?.response?.data ||
+        error.message ||
+        "Something went wrong"
+
+      toast.error(msg)
     } finally {
       setLoading(false)
     }
@@ -153,8 +160,8 @@ const Cardetails = () => {
             <button className='w-full bg-blue-500 hover:bg-primary-dull transition-all py-3 font-medium text-white rounded-xl cursor-pointer'
               disabled={Loading}
             >
-                      {Loading ? "Processing..." : "Book Now"}
-                      </button>
+              {Loading ? "Processing..." : "Book Now"}
+            </button>
 
 
           </form>

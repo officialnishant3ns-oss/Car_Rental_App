@@ -3,7 +3,6 @@ import { assets } from '../assets/assets'
 import { toast } from 'react-toastify'
 
 const SearchCar = ({ search, setSearch }) => {
-  const [input, setInput] = useState('')
 
   return (
     <div>
@@ -12,7 +11,7 @@ const SearchCar = ({ search, setSearch }) => {
         <p className='text-center font-normal mt-1 text-gray-500'>Browse our selection of premium vehicles available for your next adventure</p>
       </div>
       <div className="flex justify-center mt-5">
-        <div></div>
+       
         <div className="relative w-[650px] ">
           <img
             src={assets.search_icon}

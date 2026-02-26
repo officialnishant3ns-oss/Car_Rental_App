@@ -10,7 +10,7 @@ const Car = () => {
   return (
     <div className='bg-gray-200'>
    <SearchCar search={search} setSearch={setSearch} />
-   <AllCarsection  search={search} />
+   <AllCarsection  search={search} setSearch={setSearch}  />
     </div>
   )
 }
