@@ -18,7 +18,7 @@ const Banner = () => {
           </p>
 
           <button className="mt-8 px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl hover:bg-amber-100 transition duration-300">
-            List your car
+            List your car //navigate portion there
           </button>
         </div>
 

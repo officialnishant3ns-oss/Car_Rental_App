@@ -6,14 +6,18 @@ import Loader from '../components/Loader'
 
 const Booking = () => {
 
-  const { api } = useContext(AppContext)
+  const { api ,token} = useContext(AppContext)
   const [booking, setBooking] = useState([])
   const [loading, setLoading] = useState(true)
 
   const fetchBookingData = async () => {
     try {
-      const { data } = await api.get('/booking/getuserbooking')
-
+      const { data } = await api.get('/booking/getuserbooking',
+        {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+      )
+       console.log("booking data" , data)
       if (data.success) {
         setBooking(data.bookings || [])
       } else {
@@ -88,10 +92,10 @@ const Booking = () => {
                     Booking #{index + 1}
                   </div>
 
-                  <div className={`px-3 py-2 text-sm rounded-full text-white ${
-                    item.status === "confirmed"
-                      ? "bg-green-500"
-                      : "bg-red-400"
+                  <div className={`px-3 py-2 text-sm rounded-md ${
+                    item.status === "CONFIRMED"
+                      ? "bg-green-100 text-green-500"
+                      : "bg-red-100 text-red-500"
                   }`}>
                     {item.status}
                   </div>
@@ -125,7 +129,7 @@ const Booking = () => {
 
               </div>
 
-              <div className='mt-3 ml-40'>
+              <div className='mt-3 ml-25'>
                 <h1 className='text-xl text-gray-600'>Total Price</h1>
 
                 <p className='text-sky-700 text-3xl font-bold'>

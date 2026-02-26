@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Card from '../components/Card'
 import Featured from '../components/Featured'
 import Cardetails from './Cardetails'
@@ -6,10 +6,11 @@ import SearchCar from '../components/SearchCar'
 import AllCarsection from '../components/AllCarsection'
 
 const Car = () => {
+  const [search , setSearch] = useState('')
   return (
     <div className='bg-gray-200'>
-   <SearchCar/>
-   <AllCarsection/>
+   <SearchCar search={search} setSearch={setSearch} />
+   <AllCarsection  search={search} />
     </div>
   )
 }
