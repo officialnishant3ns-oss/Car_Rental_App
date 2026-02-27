@@ -83,7 +83,7 @@ const Dashboard = () => {
         </div>
         <div className="bg-white shadow-lg rounded-xl py-7 px-10 gap-5 flex items-center justify-center">
           <div>
-            <p className="text-gray-600">Complete Booking</p>
+            <p className="text-gray-600">Confirmed_Booking</p>
             <p className="text-2xl text-center font-bold">{data.completeBookings}</p>
           </div>
           <img

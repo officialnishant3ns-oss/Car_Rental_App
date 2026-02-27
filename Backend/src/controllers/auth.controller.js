@@ -53,7 +53,7 @@ const Login = async (req, res) => {
         }
         const validpassword = await user.isPassword(password)
         if (!validpassword) {
-            return res.status(400).json({ message: "Password not valid" })
+            return res.status(400).json({ message: "Password Not Correct" })
         }
         const Token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRETE, { expiresIn: process.env.TOKEN_EXPIRY })
 

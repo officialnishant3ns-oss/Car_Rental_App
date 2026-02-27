@@ -67,12 +67,7 @@ const createBooking = async (req, res) => {
             })
         }
 
-        if (start < new Date()) {
-            return res.status(400).json({
-                success: false,
-                message: "Cannot book past dates"
-            })
-        }
+    
 
         const car = await Car.findById(carId)
         if (!car) {
