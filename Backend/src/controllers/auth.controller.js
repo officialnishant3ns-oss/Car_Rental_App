@@ -25,7 +25,8 @@ const Register = async (req, res) => {
         }
         const options = {
             httpOnly: true,
-            secure: true
+            secure: true,
+             sameSite: "None"
         }
         return res
             .status(200)
@@ -63,7 +64,8 @@ const Login = async (req, res) => {
         }
         const options = {
             httpOnly: true,
-            secure: true
+            secure: true,
+             sameSite: "None"
         }
         return res
             .status(200)

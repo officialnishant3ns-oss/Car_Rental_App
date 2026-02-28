@@ -5,7 +5,8 @@ import { toast } from "react-toastify"
 export const AppContext = createContext()
 
 const api = axios.create({
-  baseURL: "https://car-rental-app-vlft.onrender.com/api/v1"
+  baseURL: "https://car-rental-app-vlft.onrender.com/api/v1",
+    withCredentials: true
 })
 
 const AppContextProvider = ({ children }) => {
