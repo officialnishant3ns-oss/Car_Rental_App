@@ -5,7 +5,7 @@ import { toast } from "react-toastify"
 export const AppContext = createContext()
 
 const api = axios.create({
-  baseURL: "http://localhost:3000/api/v1"
+  baseURL: "https://car-rental-app-vlft.onrender.com/api/v1"
 })
 
 const AppContextProvider = ({ children }) => {
@@ -25,6 +25,7 @@ const AppContextProvider = ({ children }) => {
     }
   }, [token])
 
+  
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token")
@@ -71,11 +72,9 @@ const AppContextProvider = ({ children }) => {
       toast.error("Failed to fetch cars")
     }
   }
-  
   useEffect(() => {
     getCars()
   }, [])
-
   const changeRole = async () => {
     try {
       const { data } = await api.patch(
