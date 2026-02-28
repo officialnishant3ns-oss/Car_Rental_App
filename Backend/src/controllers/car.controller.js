@@ -72,32 +72,32 @@ const AddCar = async (req, res) => {
     }
 }
 const getOwnerCar = async (req, res) => {
-  try {
-    const ownerId = req.user._id   
+    try {
+        const ownerId = req.user._id
 
-    const cars = await Car.find({ owner: ownerId })
+        const cars = await Car.find({ owner: ownerId })
 
-    if (!cars.length) {
-      return res.status(404).json({
-        success: false,
-        message: "No cars found for this owner"
-      })
+        if (!cars.length) {
+            return res.status(404).json({
+                success: false,
+                message: "No cars found for this owner"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            count: cars.length,
+            data: cars
+        })
+
+    } catch (error) {
+        console.error("GetOwnerCar Error:", error)
+
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong while fetching cars"
+        })
     }
-
-    return res.status(200).json({
-      success: true,
-      count: cars.length,
-      data: cars
-    })
-
-  } catch (error) {
-    console.error("GetOwnerCar Error:", error)
-
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong while fetching cars"
-    })
-  }
 }
 const toggleAvailability = async (req, res) => {
     try {
@@ -145,7 +145,7 @@ const deleteCar_Null = async (req, res) => {
                 message: "CarID not found"
             })
         }
-   const userId = req.user._id
+        const userId = req.user._id
         const car = await Car.findById(carId)
         if (!car) {
             return res.status(404).json({
@@ -161,7 +161,7 @@ const deleteCar_Null = async (req, res) => {
         }
         car.owner = null
         car.isAvailable = false
-      await  car.save()
+        await car.save()
         res.json({
             success: true,
             message: "Car deleted successfully"
@@ -208,6 +208,13 @@ const deleteCar = async (req, res) => {
         const { id } = req.params
         if (!id) {
             return res.status(400).json({ message: "Invalid car ID" })
+        }
+        const existingBooking = await Booking.findOne({ car: id })
+        if (existingBooking) {
+            return res.status(400).json({
+                success: false,
+                message: "Cannot delete car. Bookings exist for this car."
+            })
         }
         const deletedCar = await Car.findByIdAndDelete(id)
         if (!deletedCar) {
@@ -274,93 +281,93 @@ const getDashboardData = async (req, res) => {
 }
 //search filter there
 const getCarSearch = async (req, res) => {
-  try {
+    try {
 
-    const {
-      brand,
-      model,
-      category,
-      fuel_type,
-      seating_capacity,
-      pricePerDay,
-      location
-    } = req.query
+        const {
+            brand,
+            model,
+            category,
+            fuel_type,
+            seating_capacity,
+            pricePerDay,
+            location
+        } = req.query
 
-    const queryObject = {}
+        const queryObject = {}
 
-    if (brand)
-      queryObject.brand = { $regex: brand, $options: "i" }
+        if (brand)
+            queryObject.brand = { $regex: brand, $options: "i" }
 
-    if (model)
-      queryObject.model = { $regex: model, $options: "i" }
+        if (model)
+            queryObject.model = { $regex: model, $options: "i" }
 
-    if (category)
-      queryObject.category = category
+        if (category)
+            queryObject.category = category
 
-    if (fuel_type)
-      queryObject.fuel_type = fuel_type
+        if (fuel_type)
+            queryObject.fuel_type = fuel_type
 
-    if (seating_capacity)
-      queryObject.seating_capacity = Number(seating_capacity)
+        if (seating_capacity)
+            queryObject.seating_capacity = Number(seating_capacity)
 
-    if (pricePerDay)
-      queryObject.pricePerDay = { $lte: Number(pricePerDay) }
+        if (pricePerDay)
+            queryObject.pricePerDay = { $lte: Number(pricePerDay) }
 
-    if (location)
-      queryObject.location = { $regex: location, $options: "i" }
+        if (location)
+            queryObject.location = { $regex: location, $options: "i" }
 
-    const cars = await Car.find(queryObject)
+        const cars = await Car.find(queryObject)
 
-    if (cars.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No cars found"
-      })
+        if (cars.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No cars found"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            count: cars.length,
+            data: cars
+        })
+
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({
+            success: false,
+            message: "Server error while searching cars"
+        })
     }
-
-    return res.status(200).json({
-      success: true,
-      count: cars.length,
-      data: cars
-    })
-
-  } catch (error) {
-    console.error(error)
-    return res.status(500).json({
-      success: false,
-      message: "Server error while searching cars"
-    })
-  }
 }
 //m_2 For Search from Direct Input
 const getAllCar_M2 = async (req, res) => {
 
-  try {
-    const { search } = req.query
-    let filter = {}
-    
-    if (search) {
-      filter = {
-        $or: [
-          { brand: { $regex: search, $options: "i" } },
-          { model: { $regex: search, $options: "i" } },
-          { location: { $regex: search, $options: "i" } }
-        ]
-      }
+    try {
+        const { search } = req.query
+        let filter = {}
+
+        if (search) {
+            filter = {
+                $or: [
+                    { brand: { $regex: search, $options: "i" } },
+                    { model: { $regex: search, $options: "i" } },
+                    { location: { $regex: search, $options: "i" } }
+                ]
+            }
+        }
+
+        const cars = await Car.find(filter)
+
+        res.json({
+            success: true,
+            cars
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
     }
-
-    const cars = await Car.find(filter)
-
-    res.json({
-      success: true,
-      cars
-    })
-
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    })
-  }
 }
-export { AddCar, updateCar, deleteCar, getCarByid, getCarSearch, getOwnerCar, toggleAvailability, deleteCar_Null,getDashboardData,getAllCar_M2 }
+export { AddCar, updateCar, deleteCar, getCarByid, getCarSearch, getOwnerCar, toggleAvailability, deleteCar_Null, getDashboardData, getAllCar_M2 }
