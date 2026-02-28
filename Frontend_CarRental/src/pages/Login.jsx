@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect } from "react"
-import api from "../api/api.js"
+// import api from "../api/api.js"
 import { AppContext } from "../context/AppContext"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 
 const Login = () => {
-  const { setToken, setUser,showLogin, setShowLogin, } = useContext(AppContext)
+  const { setToken, setUser,showLogin, setShowLogin,api } = useContext(AppContext)
        
   const navigate = useNavigate()
   
