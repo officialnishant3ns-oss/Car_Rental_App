@@ -3,10 +3,10 @@ import Titleowner from "../../components/owner/Titleowner"
 import { assets } from "../../assets/assets"
 import { AppContext } from "../../context/AppContext"
 import { toast } from "react-toastify"
-import api from "../../api/api"
+// import api from "../../api/api"
 
 const AddCar = () => {
-  const { token } = useContext(AppContext)
+  const { token,api } = useContext(AppContext)
 
   const [car, setCar] = useState({
     brand: "",
