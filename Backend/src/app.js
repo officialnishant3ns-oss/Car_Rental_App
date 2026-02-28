@@ -5,7 +5,7 @@ const app = express()
 
 
 app.use(cors({
-  origin: "http://localhost:5173", 
+  origin: "https://car-rental-app-1-304v.onrender.com/", 
   methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
   credentials: true
 }))
